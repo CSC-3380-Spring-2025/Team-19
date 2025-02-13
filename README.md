@@ -1,10 +1,10 @@
-# [Name of the Project] : [Team Number]
+# [Name of the Project] : [Team 19]
 # Members
 Project Manager: [Jonathan Breaux] ([Jbreaux05])\
 Communications Lead: [Jonathan Martinez] ([Jonathan Martinez12])\
 Git Master: [Name] ([GitHub Name])\
 Design Lead: [Name] ([GitHub Name])\
-Quality Assurance Tester: [Name] ([GitHub Name])
+Quality Assurance Tester: [Bryce Shifflett] ([bshiff2])
 
 # About Our Software
 
