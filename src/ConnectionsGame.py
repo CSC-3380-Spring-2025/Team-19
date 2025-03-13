@@ -82,7 +82,7 @@ def play_game(categories: Dict[str, List[str]]):
             display_grid(words, max_attempts - attempts)
             break
 
-#Function for testing the game code. Make sure to delete your call to it once you are done testing.
+#Function for testing the game code. Make sure to delete your call to it once you are done testing!
 def test_game() -> None:
     # Sample Categories
     categories = {
