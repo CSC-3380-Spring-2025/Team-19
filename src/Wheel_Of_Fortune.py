@@ -3,9 +3,6 @@
 
 from typing import List, Any  #Allows for the type hinting of certain arrays/lists
 
-fortune_answer: str = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG" #The answer to the puzzle, for testing
-fortune_category: str = "PANGRAM"
-
 #Function for converting the sentence into a blank sentence to be filled in
 #sentence: The sentence the user is trying to find
 #return: A list representing a list of blank spaces, matching the structure of sentence
@@ -99,4 +96,9 @@ def play_game(sentence:str, category:str) -> tuple[int, int, int]:
                 incorrect_attempts += 1
     return calc_score(letters_attempted, incorrect_attempts), letters_attempted, incorrect_attempts
 
-play_game(fortune_answer, fortune_category) #Testing the play_game method and all associated methods
+#Function for testing the game code. Make sure to delete your call to it once you are done testing.
+def test_game() -> None:
+    fortune_answer: str = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"  # The answer to the puzzle, for testing
+    fortune_category: str = "PANGRAM" # The category for the puzzle
+    play_game(fortune_answer, fortune_category)  # Testing the play_game method and all associated methods
+    print("Game ran successfully!")

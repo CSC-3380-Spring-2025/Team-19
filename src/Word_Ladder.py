@@ -3,8 +3,6 @@
 
 from typing import List #Allows for the type hinting of certain arrays/lists
 
-word_answers: list[str] = ["DOG", "FOOD", "BOWL", "PIN", "KNIT"] #The answer to the puzzle. Used for testing.
-
 #Function for hiding the middle words for the puzzle
 def hide_words(word_list: list[str]) -> list[str]:
     word: int = 0
@@ -60,4 +58,8 @@ def play_game(word_list: list[str]) -> tuple[int, int]:
     print("You win! Congratulations!")
     return 10000-(100*incorrect_guesses), incorrect_guesses
 
-play_game(word_answers) #Testing the play_game method and all associated methods
+#Function for testing the game code. Make sure to delete your call to it once you are done testing.
+def test_game() -> None:
+    word_answers: list[str] = ["DOG", "FOOD", "BOWL", "PIN", "KNIT"]  # The answer to the puzzle. Used for testing.
+    play_game(word_answers) #Testing the play_game method and all associated methods
+    print("Game ran successfully!")

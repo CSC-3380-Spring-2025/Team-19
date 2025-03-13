@@ -3,14 +3,6 @@
 import random
 from typing import List, Dict, Tuple
 
-#Sample Categories
-categories = {
-    "Colors": ["Red", "Blue", "Green", "Yellow"],
-    "Fruits": ["Apple", "Banana", "Grape", "Orange"],
-    "Animals": ["Dog", "Cat", "Horse", "Elephant"],
-    "Countries": ["USA", "Canada", "France", "Germany"]
-}
-
 def display_grid(words: List[str], attempts_left: int) -> None:
     """Creates the display grid"""
     print(f"\nCurrent Grid (Attempts left: {attempts_left}):")
@@ -90,4 +82,13 @@ def play_game(categories: Dict[str, List[str]]):
             display_grid(words, max_attempts - attempts)
             break
 
-play_game(categories) #Tests the play_game method and all other functions with sample categories
+#Function for testing the game code. Make sure to delete your call to it once you are done testing.
+def test_game() -> None:
+    # Sample Categories
+    categories = {
+        "Colors": ["Red", "Blue", "Green", "Yellow"],
+        "Fruits": ["Apple", "Banana", "Grape", "Orange"],
+        "Animals": ["Dog", "Cat", "Horse", "Elephant"],
+        "Countries": ["USA", "Canada", "France", "Germany"]
+    }
+    play_game(categories) #Tests the play_game method and all other functions with sample categories
