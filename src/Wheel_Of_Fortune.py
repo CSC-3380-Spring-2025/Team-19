@@ -96,7 +96,7 @@ def play_game(sentence:str, category:str) -> tuple[int, int, int]:
                 incorrect_attempts += 1
     return calc_score(letters_attempted, incorrect_attempts), letters_attempted, incorrect_attempts
 
-#Function for testing the game code. Make sure to delete your call to it once you are done testing.
+#Function for testing the game code. Make sure to delete your call to it once you are done testing!
 def test_game() -> None:
     fortune_answer: str = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG"  # The answer to the puzzle, for testing
     fortune_category: str = "PANGRAM" # The category for the puzzle
