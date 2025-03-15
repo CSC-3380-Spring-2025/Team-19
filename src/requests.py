@@ -1,21 +1,21 @@
 from flask import Flask, request, jsonify, Response
 import psycopg2
-import psycopg2.extensions
+from psycopg2.extensions import connection, cursor
 import bcrypt
 from typing import List, Tuple, Dict, Any, Optional
 from datetime import date, datetime, timedelta
 
-app = Flask(__name__)
+app: Flask = Flask(__name__)
 
 # Database connection
-conn: psycopg2.extensions.connection = psycopg2.connect(
+conn: connection = psycopg2.connect(
     host="localhost",
     dbname="postgres",
     user="postgres",
     password="1234",
     port=5432
 )
-cur: psycopg2.extensions.cursor = conn.cursor()
+cur: cursor = conn.cursor()
 
 
 @app.route('/register', methods=['POST'])

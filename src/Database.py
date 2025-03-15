@@ -1,18 +1,19 @@
 from flask import Flask, request, jsonify
 import psycopg2
+from psycopg2.extensions import connection, cursor
 import bcrypt
 
 # This file is to ensure that database tables are set up correctly and exist.
 
 # Database connection
-conn = psycopg2.connect(
+conn: connection  = psycopg2.connect(
     host="localhost",
     dbname="postgres",
     user="postgres",
     password="1234",
     port=5432
 )
-cur = conn.cursor()
+cur: cursor = conn.cursor()
 
 # Create users table if not exists
 cur.execute("""
