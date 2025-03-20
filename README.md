@@ -1,25 +1,22 @@
-<<<<<<< HEAD
-# [Name of the Project] : [Team 19]
+# Name of the Project : Team 19
 # Members
-Project Manager: [Jonathan Breaux] ([Jbreaux05])\
-Communications Lead: [Jonathan Martinez] ([Jonathan Martinez12])\
-Git Master: [Name] ([GitHub Name])\
-Design Lead: [Name] ([GitHub Name])\
-Quality Assurance Tester: [Bryce Shifflett] ([bshiff2])
+Project Manager: Jonathan Breaux (Jbreaux05)\
+Communications Lead: Jonathan Martinez (Jonathan Martinez12])\
+Git Master: Beau Fontenot (bfontenot23)\
+Design Lead: Skylar Flemming (SkyMFlem777)\
+Quality Assurance Tester: Bryce Shifflett (bshiff2)
 
 # About Our Software
 
 Describe a little about what the project is about here.
-## Platforms Tested on
-- MacOS
-- Android
-- iOS
-- Linux
-- Windows
+## Browsers Tested on
+- Coming soon
 # Important Links
-Kanban Board: [link]\
+Kanban Board: [link](https://github.com/orgs/CSC-3380-Spring-2025/projects/9/views/1)\
 Designs: [link]\
-Styles Guide(s): [link]
+Styles Guide(s):
+- [Python PEP8](https://peps.python.org/pep-0008/)
+- [TypeScript ts.dev](https://ts.dev/style/)
 
 # How to Run Dev and Test Environment
 
@@ -54,21 +51,3 @@ static void Main(){
 	Console.WriteLine("Hello, World!");
 }
 ```
-=======
-# wordstorm_flutter
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
->>>>>>> b619d9a (Updated Flutter UI homepage  and fixed imports)

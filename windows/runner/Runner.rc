@@ -90,12 +90,14 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "wordstorm_flutter" "\0"
+
+            VALUE "FileDescription", "team_19" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "wordstorm_flutter" "\0"
+            VALUE "InternalName", "team_19" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "wordstorm_flutter.exe" "\0"
-            VALUE "ProductName", "wordstorm_flutter" "\0"
+            VALUE "OriginalFilename", "team_19.exe" "\0"
+            VALUE "ProductName", "team_19" "\0"
+
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
