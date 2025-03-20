@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
-
+import 'home_page.dart';
 
 void main() {
-  runApp(const ConnectionsGameApp());
+  runApp(const MyApp());
+  runApp(const ConnectionsGameApp()); // I put this here for now but I'm pretty sure this won't work -BF
 }
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'WordStorm',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: HomePage(), // Make sure this is correct
+//
+// Note: this code may not run until we figure out
+// how to move the connections game app widget to
+// another file. We'll have main be the home page
+//
 
 class ConnectionsGameApp extends StatelessWidget {
   const ConnectionsGameApp({super.key});
