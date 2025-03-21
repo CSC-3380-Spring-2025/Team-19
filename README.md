@@ -16,7 +16,7 @@ Kanban Board: [link](https://github.com/orgs/CSC-3380-Spring-2025/projects/9/vie
 Designs: [link]\
 Styles Guide(s):
 - [Python PEP8](https://peps.python.org/pep-0008/)
-- [TypeScript ts.dev](https://ts.dev/style/)
+- [Effective Dart](https://dart.dev/effective-dart/style)
 
 # How to Run Dev and Test Environment
 
