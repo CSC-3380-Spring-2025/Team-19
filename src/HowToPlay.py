@@ -73,13 +73,15 @@ def show_tutorial(user_id: int, game: str) -> None:
     print(tutorial_text.get(game, "Invalid game."))
     mark_tutorial_seen(user_id, game)
 
-#command line testing, not incredibly practical error wise at the moment
-if __name__ == "__main__":
-    user_id: int = int(input("Enter your user ID: "))
-    game: str = input("Enter the game (Wheel of Fortune/Word Ladder/Connections): ").strip()
+#Command line testing, not incredibly practical error wise at the moment. Once done testing, make sure to delete calls.
+#As of right now, testing the function will result in an error once the game info is printed, as it is not connected to any files.
+def test_how_to_play() -> None:
+    if __name__ == "__main__":
+        user_id: int = int(input("Enter your user ID: "))
+        game: str = input("Enter the game (Wheel of Fortune/Word Ladder/Connections): ").strip()
 
-    action: str = input("Type 'play' to start the game or 'help' for instructions: ").strip().lower()
-    if action in ["play", "help"]:
-        show_tutorial(user_id, game)
-    else:
-        print("Invalid input.")
+        action: str = input("Type 'play' to start the game or 'help' for instructions: ").strip().lower()
+        if action in ["play", "help"]:
+            show_tutorial(user_id, game)
+        else:
+            print("Invalid input.")
