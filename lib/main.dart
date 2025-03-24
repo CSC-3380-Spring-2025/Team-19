@@ -1,28 +1,30 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
+import 'game_selector.dart'; // Import the game selection screen
+import 'connections.dart';
+import 'letterquest.dart';
+import 'wordladder_frontend.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WordStorm',
+      debugShowCheckedModeBanner: false,
+      title: 'WordStorm Games',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.blue,
       ),
-      home: HomePage()); // Make sure this is correct
+      home: GameSelectionScreen(), // ✅ Start with the Game Selection screen
+      routes: {
+        '/connections': (context) => ConnectionsGameApp(),
+        '/letterquest': (context) => LetterQuestGame(),
+        '/wordladder': (context) => WordLadderGame(),
+      },
+    );
   }
 }
-//
-// Note: this code may not run until we figure out
-// how to move the connections game app widget to
-// another file. We'll have main be the home page
-//
-
-
