@@ -49,7 +49,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
                     Navigator.pop(context);
                     resetGame();
                   },
-                  child: Text("Play Again?"),
+                  child: Text("Play Again"),
                 )
               ],
             ),

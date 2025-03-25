@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(const ConnectionsGameApp());
+}
+
 class ConnectionsGameApp extends StatelessWidget {
+  const ConnectionsGameApp({super.key});
+
+@override 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Connections Game'),
-      ),
-      body: Center(
-        child: Text('Welcome to the Connections Game!'),
-      ),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ConnectionsGameScreen(),
     );
   }
 }
