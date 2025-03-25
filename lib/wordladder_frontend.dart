@@ -22,7 +22,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
   List<String> hideWords(List<String> words) {
     List<String> newList = List.from(words);
     for (int i = 1; i < words.length - 1; i++) {
-      newList[i] = words[i][0] + "_" * (words[i].length - 1);
+      newList[i] = words[i][0] + " _ " * (words[i].length - 1);
     }
     return newList;
   }
