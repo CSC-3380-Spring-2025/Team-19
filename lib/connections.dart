@@ -7,7 +7,6 @@ void main() {
 class ConnectionsGameApp extends StatelessWidget {
   const ConnectionsGameApp({super.key});
 
-@override 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -17,15 +16,12 @@ class ConnectionsGameApp extends StatelessWidget {
   }
 }
 
-
 class ConnectionsGameScreen extends StatefulWidget {
   const ConnectionsGameScreen({super.key});
-
 
   @override
   _ConnectionsGameScreenState createState() => _ConnectionsGameScreenState();
 }
-
 
 class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
   List<String> words = [
@@ -35,9 +31,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     "Guitar", "Piano", "Violin", "Drums"
   ];
 
-
   List<String> selectedWords = [];
-
 
   void toggleSelection(String word) {
     setState(() {
@@ -49,10 +43,8 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     });
   }
 
-
   void checkSelection() {
     if (selectedWords.length == 4) {
-      // TODO: Implement actual category checking logic
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Checking selection...")),
       );
@@ -62,7 +54,6 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,11 +61,14 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 50),
-          Expanded(
+          const SizedBox(height: 20),
+          // Set a fixed height to fit all the words
+          SizedBox(
+            height: 550, // Height of the box displaying all the words (change as needed)
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(), // Disable scrolling (for better size control, the user shouldn't need to scroll)
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   childAspectRatio: 2,
@@ -108,7 +102,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20), // Space before the button
+const SizedBox(height: 10), // Space before the button
           SizedBox(
             width: 200, // Wider button
             height: 50, // Taller button
@@ -120,7 +114,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 200), // Extra spacing at the bottom
+          const SizedBox(height: 20), // Extra spacing at the bottom
         ],
       ),
     );
