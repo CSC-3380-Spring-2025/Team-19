@@ -6,7 +6,7 @@ class WordLadderGame extends StatefulWidget {
 }
 
 class _WordLadderGameApp extends State<WordLadderGame> {
-  final List<String> wordList = ['DOG', 'FOOD', 'BOWL', 'PIN', 'KNIT'];
+  final List<String> wordList = ['BASKET', 'BALL', 'GAME', 'SHOW', 'CASE'];
   late List<String> currentWordLadder;
   int score = 10000;
   int incorrectGuesses = 0;
@@ -76,9 +76,15 @@ class _WordLadderGameApp extends State<WordLadderGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      appBar: AppBar(title: Text("Word Ladder Game")),
-      
+      appBar: AppBar(
+        title: Text("Word Ladder Game"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to the previous screen
+          },
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

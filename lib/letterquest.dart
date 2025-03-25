@@ -1,29 +1,18 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(LetterQuestGame());
-}
-
 class LetterQuestGame extends StatelessWidget {
- 
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(title: Text("LetterQuest")),
-        body: Center(
-          child: LetterQuestPhraseDisplay(
-            phrase: "HELLO WORLD",
-            hint: "A common greeting",
-          ),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Letter Quest Game'),
+      ),
+      body: Center(
+        child: Text('Welcome to the Letter Quest Game!'),
       ),
     );
   }
 }
-
 class LetterQuestPhraseDisplay extends StatelessWidget {
   final String phrase;
   final String hint;

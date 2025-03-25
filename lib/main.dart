@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'game_selector.dart'; // Import the game selection screen
+import 'game_selector.dart'; 
 import 'connections.dart';
 import 'letterquest.dart';
 import 'wordladder_frontend.dart';
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: GameSelectionScreen(), // ✅ Start with the Game Selection screen
+      home: GameSelectionScreen(), // 
       routes: {
         '/connections': (context) => ConnectionsGameApp(),
         '/letterquest': (context) => LetterQuestGame(),
