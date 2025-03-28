@@ -72,7 +72,6 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           oneAway = true;
         }
       }
-      
       setState(() {
         if (isCorrect) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -108,11 +107,14 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(height: 20),
           Text("Attempts Left: $attemptsLeft", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          Expanded(
+          // Set a fixed height to fit all the words
+          Expanded( // This ensures the words grid takes up available space
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(), // Disable scrolling (for better size control, the user shouldn't need to scroll)
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   childAspectRatio: 2,
@@ -146,6 +148,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 10), // Space before the button
           SizedBox(
             width: 200,
             height: 50,
