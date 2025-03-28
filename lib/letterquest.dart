@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 
-class LetterQuestGame extends StatelessWidget {
+class LetterQuestGame extends StatefulWidget {
+  @override
+  _LetterQuestGameState createState() => _LetterQuestGameState();
+}
+
+class _LetterQuestGameState extends State<LetterQuestGame> {
+  final LetterQuestGameLogic gameLogic = LetterQuestGameLogic();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,20 +16,36 @@ class LetterQuestGame extends StatelessWidget {
         title: Text('Letter Quest Game'),
       ),
       body: Center(
-        child: Text('Welcome to the Letter Quest Game!'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LetterQuestPhraseDisplay(
+              phrase: gameLogic.phrase,
+              hint: gameLogic.hint,
+              guessedLetters: gameLogic.guessedLetters,
+            ),
+            SizedBox(height: 20),
+            gameLogic.isGameOver
+                ? Text("You got it!", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                : Text("Incorrect Attempts: ${gameLogic.incorrectAttempts}", style: TextStyle(fontSize: 16)),
+          ],
+        ),
       ),
     );
   }
 }
+
 class LetterQuestPhraseDisplay extends StatelessWidget {
   final String phrase;
   final String hint;
+  final Set<String> guessedLetters;
 
   const LetterQuestPhraseDisplay({
-    Key? key,
+    super.key,
     required this.phrase,
     required this.hint,
-  }) : super(key: key);
+    required this.guessedLetters,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +58,14 @@ class LetterQuestPhraseDisplay extends StatelessWidget {
           runSpacing: 8.0,
           children: phrase.split('').map((char) {
             return char == ' '
-                ? SizedBox(width: 16.0) // Space representation
+                ? SizedBox(width: 16.0)
                 : Container(
                     padding: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                       border: Border(bottom: BorderSide(width: 2.0)),
                     ),
                     child: Text(
-                      '_',
+                      guessedLetters.contains(char.toUpperCase()) ? char : '_',
                       style: TextStyle(
                         fontSize: _calculateFontSize(context, phrase.length),
                         fontWeight: FontWeight.bold,
@@ -70,5 +94,40 @@ class LetterQuestPhraseDisplay extends StatelessWidget {
   double _calculateFontSize(BuildContext context, int length) {
     double baseSize = 24.0;
     return (length > 15) ? baseSize - (length - 15) * 0.5 : baseSize;
+  }
+}
+
+class LetterQuestGameLogic {
+  final String phrase = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
+  final String hint = "PANGRAM";
+  Set<String> guessedLetters = {};
+  int incorrectAttempts = 0;
+  bool isGameOver = false;
+
+  List<String> get displayPhrase {
+    return phrase.split('').map((char) {
+      if (char == ' ' || char == "'") {
+        return char;
+      }
+      return guessedLetters.contains(char.toUpperCase()) ? char : '_';
+    }).toList();
+  }
+
+  void onGuess(String guess) {
+    if (isGameOver) return;
+    if (guess.length == 1) {
+      if (!guessedLetters.contains(guess.toUpperCase())) {
+        guessedLetters.add(guess.toUpperCase());
+        if (!phrase.contains(guess.toUpperCase())) {
+          incorrectAttempts++;
+        }
+      }
+    } else {
+      if (guess.toUpperCase() == phrase) {
+        isGameOver = true;
+      } else {
+        incorrectAttempts++;
+      }
+    }
   }
 }
