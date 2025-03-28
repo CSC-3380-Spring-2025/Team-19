@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 void main() {
   runApp(const ConnectionsGameApp());
@@ -7,7 +8,6 @@ void main() {
 class ConnectionsGameApp extends StatelessWidget {
   const ConnectionsGameApp({super.key});
 
-@override 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
@@ -17,27 +17,32 @@ class ConnectionsGameApp extends StatelessWidget {
   }
 }
 
-
 class ConnectionsGameScreen extends StatefulWidget {
   const ConnectionsGameScreen({super.key});
-
 
   @override
   _ConnectionsGameScreenState createState() => _ConnectionsGameScreenState();
 }
 
-
 class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
-  List<String> words = [
-    "Apple", "Banana", "Cherry", "Date",
-    "Red", "Blue", "Green", "Yellow",
-    "Cat", "Dog", "Horse", "Elephant",
-    "Guitar", "Piano", "Violin", "Drums"
-  ];
+  Map<String, List<String>> categories = {
+    "Colors": ["Red", "Blue", "Green", "Yellow"],
+    "Fruits": ["Apple", "Banana", "Grape", "Orange"],
+    "Animals": ["Dog", "Cat", "Horse", "Elephant"],
+    "Instruments": ["Guitar", "Piano", "Violin", "Drums"]
+  };
 
-
+  late List<String> words;
   List<String> selectedWords = [];
+  Set<String> foundCategories = {};
+  int attemptsLeft = 4;
 
+  @override
+  void initState() {
+    super.initState();
+    words = categories.values.expand((e) => e).toList();
+    words.shuffle(Random());
+  }
 
   void toggleSelection(String word) {
     setState(() {
@@ -49,19 +54,52 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     });
   }
 
-
   void checkSelection() {
     if (selectedWords.length == 4) {
-      // TODO: Implement actual category checking logic
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Checking selection...")),
-      );
+      bool isCorrect = false;
+      bool oneAway = false;
+      
+      for (var category in categories.values) {
+        Set<String> correctSet = category.toSet();
+        Set<String> selectionSet = selectedWords.toSet();
+        
+        if (selectionSet.containsAll(correctSet) && correctSet.containsAll(selectionSet)) {
+          isCorrect = true;
+          foundCategories.add(category.toString());
+          words.removeWhere((word) => selectionSet.contains(word));
+          break;
+        } else if (selectionSet.intersection(correctSet).length == 3) {
+          oneAway = true;
+        }
+      }
+      
       setState(() {
+        if (isCorrect) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Correct! You've found a category.")),
+          );
+        } else {
+          if (oneAway) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("One away! Try again.")),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Incorrect. Try again.")),
+            );
+          }
+          attemptsLeft--;
+        }
         selectedWords.clear();
+
+        if (attemptsLeft == 0) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Game Over! No attempts left.")),
+          );
+        }
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +108,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 50),
+          Text("Attempts Left: $attemptsLeft", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -108,19 +146,15 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20), // Space before the button
           SizedBox(
-            width: 200, // Wider button
-            height: 50, // Taller button
+            width: 200,
+            height: 50,
             child: ElevatedButton(
-              onPressed: selectedWords.length == 4 ? checkSelection : null,
-              child: const Text(
-                "Submit",
-                style: TextStyle(fontSize: 18), // Bigger text
-              ),
+              onPressed: (selectedWords.length == 4 && attemptsLeft > 0) ? checkSelection : null,
+              child: const Text("Submit", style: TextStyle(fontSize: 18)),
             ),
           ),
-          const SizedBox(height: 200), // Extra spacing at the bottom
+          const SizedBox(height: 20),
         ],
       ),
     );
