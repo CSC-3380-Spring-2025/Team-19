@@ -107,7 +107,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Text("Attempts Left: $attemptsLeft", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           // Set a fixed height to fit all the words
           Expanded( // This ensures the words grid takes up available space
@@ -148,7 +148,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 10), // Space before the button
+          const SizedBox(height: 5), // Space before the button
           SizedBox(
             width: 200,
             height: 50,
@@ -157,7 +157,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               child: const Text("Submit", style: TextStyle(fontSize: 18)),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 5),
         ],
       ),
     );
