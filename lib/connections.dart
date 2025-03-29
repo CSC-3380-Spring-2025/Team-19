@@ -148,7 +148,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 5), // Space before the button
+          const SizedBox(height: 5), // Space before the submit button
           SizedBox(
             width: 200,
             height: 50,
