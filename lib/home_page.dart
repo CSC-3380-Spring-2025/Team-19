@@ -19,12 +19,22 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // TODO: Navigate to game page
+                 Navigator.pushNamed(context, '/gameselection');
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
               child: Text("Play", style: TextStyle(fontSize: 20)),
+            ),
+            SizedBox(height: 20), //Spacing between the play and leaderboard buttons
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/leaderboardselection');
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+              ),
+              child: Text("Daily Leaderboards", style: TextStyle(fontSize: 20)),
             ),
           ],
         ),
