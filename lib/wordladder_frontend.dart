@@ -84,6 +84,34 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             Navigator.pop(context); // Navigate back to the previous screen
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: 'How to Play',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('How to Play Word Ladder'),
+                  content: Text(
+                    "Welcome to Word Ladder!\n\n"
+                    "You will be given a starting word and a hint for the next word, which begins with the first letter provided.\n\n"
+                    "Each word connects to the next in a meaningful way, forming a continuous chain.\n\n"
+                    "For example: 'dog' → 'F___' (where the answer could be 'food').\n\n"
+                    "Your goal is to correctly complete the sequence as efficiently as possible.\n\n"
+                    "Think of words that logically follow the previous one and match the given hint!",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Got it'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

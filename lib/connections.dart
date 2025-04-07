@@ -103,7 +103,38 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Connections")),
+      appBar: AppBar(
+        title: const Text("Connections"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: 'How to Play',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('How to Play Connections'),
+                  content: Text(
+                    "Welcome to Connections!\n\n"
+                    "You will be given a set of 16 words.\n\n"
+                    "Your goal is to find four groups of four words that share a common theme.\n\n"
+                    "Select four words that you think belong together and submit your guess.\n\n"
+                    "If correct, the words will be grouped together. If incorrect, you will receive a 'one away' hint if only one word is incorrect.\n\n"
+                    "You have a total of four incorrect attempts before the game ends.\n\n"
+                    "Think critically about the relationships between words and find all the correct groups!",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Got it'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
