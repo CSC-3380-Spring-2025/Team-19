@@ -8,6 +8,7 @@ import 'wordladder_frontend.dart';
 import 'letterquest_leaderboard_page.dart';
 import 'wordladder_leaderboard_page.dart';
 import 'connections_leaderboard_page.dart';
+import 'profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/letterquestleaderboard': (context) => LetterQuestLeaderboard(),
         '/wordladderleaderboard' : (context) => WordLadderLeaderboard(), 
         '/connectionsleaderboard' : (context) => ConnectionsLeaderboard(), 
+        '/profile': (context) => ProfilePage(),
       },
     );
   }
