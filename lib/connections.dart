@@ -54,6 +54,28 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     });
   }
 
+  void showWinPopup(int attempts) {
+    int attemptsTaken = 4 - attempts;
+    int score = 10000 - (attemptsTaken*2500); // Score calculator for popup
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('🎉 Congratulations!'),
+        content: Text('You found all categories!\nFinal Score: $score'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   void checkSelection() {
     if (selectedWords.length == 4) {
       bool isCorrect = false;
@@ -90,6 +112,10 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           attemptsLeft--;
         }
         selectedWords.clear();
+        
+        if (foundCategories.length == categories.length) {
+          showWinPopup(attemptsLeft); 
+        }
 
         if (attemptsLeft == 0) {
           ScaffoldMessenger.of(context).showSnackBar(
