@@ -8,7 +8,17 @@ class LeaderboardSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
   
     return Scaffold(
-      appBar: AppBar(title: Text("View a Leaderboard")),
+      appBar: AppBar(
+        title: Text("View a Leaderboard"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            }
+          )
+        ]
+      ),
       body: GridView.count(
         crossAxisCount: 2,
         padding: EdgeInsets.all(16),

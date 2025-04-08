@@ -8,7 +8,17 @@ class GameSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
   
     return Scaffold(
-      appBar: AppBar(title: Text("Select a Game")),
+      appBar: AppBar(
+        title: Text("Select a Game"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            }
+          )
+        ]
+      ),
       body: GridView.count(
         crossAxisCount: 2,
         padding: EdgeInsets.all(16),
