@@ -23,7 +23,7 @@ class LeaderboardSelectionScreen extends StatelessWidget {
         crossAxisCount: 2,
         padding: EdgeInsets.all(16),
         children: [
-          _buildGameTile(context, 'Connections Leaderboard', 'C:\Users\jonma\Downloads\Team-19 3-2-25\Team-19\lib\logos\CONNECTIONS.png', () {
+          _buildGameTile(context, 'Connections', 'C:\Users\jonma\Downloads\Team-19 3-2-25\Team-19\lib\logos\CONNECTIONS.png', () {
             Navigator.pushNamed(context, '/connectionsleaderboard');
           }),
           _buildGameTile(context, 'LetterQuest', 'C:\Users\jonma\Downloads\Team-19 3-2-25\Team-19\lib\logos\LETTER QUEST.png', () {
