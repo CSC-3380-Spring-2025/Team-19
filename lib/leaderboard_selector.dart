@@ -13,13 +13,13 @@ class LeaderboardSelectionScreen extends StatelessWidget {
         crossAxisCount: 2,
         padding: EdgeInsets.all(16),
         children: [
-          _buildGameTile(context, 'Connections Leaderboard', 'C:\Users\jonma\Downloads\Team-19 3-2-25\Team-19\lib\logos\CONNECTIONS.png', () {
+          _buildGameTile(context, 'Connections Leaderboard', 'C:UsersjonmaDownloadsTeam-19 3-2-25Team-19liblogosCONNECTIONS.png', () {
             Navigator.pushNamed(context, '/connectionsleaderboard');
           }),
-          _buildGameTile(context, 'LetterQuest', 'C:\Users\jonma\Downloads\Team-19 3-2-25\Team-19\lib\logos\LETTER QUEST.png', () {
+          _buildGameTile(context, 'LetterQuest', 'C:UsersjonmaDownloadsTeam-19 3-2-25Team-19liblogosLETTER QUEST.png', () {
             Navigator.pushNamed(context, '/letterquestleaderboard');
           }),
-          _buildGameTile(context, 'Word Ladder', 'C:\Users\jonma\Downloads\Team-19 3-2-25\Team-19\lib\logos\WORD LADDER.png', () {
+          _buildGameTile(context, 'Word Ladder', 'C:UsersjonmaDownloadsTeam-19 3-2-25Team-19liblogosWORD LADDER.png', () {
             Navigator.pushNamed(context, '/wordladderleaderboard');
           }),
         ],
