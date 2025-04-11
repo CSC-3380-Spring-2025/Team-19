@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class WordLadderGame extends StatefulWidget {
   @override
@@ -13,10 +14,34 @@ class _WordLadderGameApp extends State<WordLadderGame> {
   int currentIndex = 1;
   TextEditingController wordController = TextEditingController();
 
+  // Timer-related
+  late Timer _timer;
+  int secondsElapsed = 0;
+
   @override
   void initState() {
     super.initState();
     currentWordLadder = hideWords(wordList);
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (secondsElapsed < 999 && score > 0) {
+        setState(() {
+          secondsElapsed++;
+          score = (score - 10).clamp(0, 10000);
+        });
+      } else {
+        _timer.cancel();
+      }
+    });
   }
 
   List<String> hideWords(List<String> words) {
@@ -38,11 +63,12 @@ class _WordLadderGameApp extends State<WordLadderGame> {
         });
 
         if (currentIndex >= wordList.length - 1) {
+          _timer.cancel();
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
               title: Text("Congratulations!"),
-              content: Text("You completed the Word Ladder! Score: $score"),
+              content: Text("You completed the Word Ladder!\n\nScore: $score\nTime: ${secondsElapsed}s"),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -58,7 +84,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
       } else {
         setState(() {
           incorrectGuesses++;
-          score -= 100;
+          score = (score - 100).clamp(0, 10000);
         });
       }
     }
@@ -69,7 +95,9 @@ class _WordLadderGameApp extends State<WordLadderGame> {
       currentIndex = 1;
       incorrectGuesses = 0;
       score = 10000;
+      secondsElapsed = 0;
       currentWordLadder = hideWords(wordList);
+      _startTimer();
     });
   }
 
@@ -81,10 +109,19 @@ class _WordLadderGameApp extends State<WordLadderGame> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Navigate back to the previous screen
+            Navigator.pop(context);
           },
         ),
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Center(
+              child: Text(
+                "${secondsElapsed}s",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
           IconButton(
             icon: Icon(Icons.help_outline),
             tooltip: 'How to Play',
