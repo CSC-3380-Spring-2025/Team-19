@@ -8,12 +8,22 @@ class LeaderboardSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
   
     return Scaffold(
-      appBar: AppBar(title: Text("View a Leaderboard")),
+      appBar: AppBar(
+        title: Text("View a Leaderboard"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            }
+          )
+        ]
+      ),
       body: GridView.count(
         crossAxisCount: 2,
         padding: EdgeInsets.all(16),
         children: [
-          _buildGameTile(context, 'Connections Leaderboard', 'C:UsersjonmaDownloadsTeam-19 3-2-25Team-19liblogosCONNECTIONS.png', () {
+          _buildGameTile(context, 'Connections', 'C:\Users\jonma\Downloads\Team-19 3-2-25\Team-19\lib\logos\CONNECTIONS.png', () {
             Navigator.pushNamed(context, '/connectionsleaderboard');
           }),
           _buildGameTile(context, 'LetterQuest', 'C:UsersjonmaDownloadsTeam-19 3-2-25Team-19liblogosLETTER QUEST.png', () {

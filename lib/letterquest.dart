@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'keyboard_ui.dart'; 
 
 class LetterQuestGame extends StatefulWidget {
   @override
@@ -8,6 +10,32 @@ class LetterQuestGame extends StatefulWidget {
 class _LetterQuestGameState extends State<LetterQuestGame> {
   final LetterQuestGameLogic gameLogic = LetterQuestGameLogic();
 
+  late Timer _timer;
+  int secondsElapsed = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (secondsElapsed < 999) {
+        setState(() {
+          secondsElapsed++;
+        });
+      } else {
+        _timer.cancel();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +43,15 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
       appBar: AppBar(
         title: Text('Letter Quest Game'),
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Center(
+              child: Text(
+                "${secondsElapsed}s",
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
           IconButton(
             icon: Icon(Icons.help_outline),
             tooltip: 'How to Play',
@@ -46,7 +83,10 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
           ),
         ],
       ),
-      body: Center(
+body: Column(
+  children: [
+    Expanded(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -57,11 +97,34 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
             ),
             SizedBox(height: 20),
             gameLogic.isGameOver
-                ? Text("You got it!", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-                : Text("Incorrect Attempts: ${gameLogic.incorrectAttempts}", style: TextStyle(fontSize: 16)),
+                ? Text("You got it!",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                : Text("Incorrect Attempts: ${gameLogic.incorrectAttempts}",
+                    style: TextStyle(fontSize: 16)),
           ],
         ),
       ),
+    ),
+    SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: WordLadderKeyboard(
+          onEnter: () {
+              // Need to add onEnter functionality for onscreen keyboard. Look at letter_quest_input.dart?
+          },
+          onDelete: () {
+            // Need to add onDelete functionality (only applies to user trying to solve). Look at letter_quest_input.dart?
+          },
+          onKeyPress: (key) {
+            setState(() {
+              gameLogic.onGuess(key);
+            });
+          },
+        ),
+      ),
+    ),
+  ],
+),
     );
   }
 }

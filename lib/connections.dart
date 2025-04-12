@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'dart:async';
 
 void main() {
-  runApp(const ConnectionsGameApp());
+  runApp(const ConnectionsGameScreen());
 }
 
-class ConnectionsGameApp extends StatelessWidget {
-  const ConnectionsGameApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ConnectionsGameScreen(),
-    );
-  }
-}
 
 class ConnectionsGameScreen extends StatefulWidget {
   const ConnectionsGameScreen({super.key});
@@ -37,11 +27,28 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
   Set<String> foundCategories = {};
   int attemptsLeft = 4;
 
+  // Timer variables
+  Timer? _gameTimer;
+  int elapsedSeconds = 0;
+
   @override
   void initState() {
     super.initState();
     words = categories.values.expand((e) => e).toList();
     words.shuffle(Random());
+    _startTimer(); // Start the timer when the game begins
+  }
+
+  void _startTimer() {
+    _gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (elapsedSeconds < 999) {
+        setState(() {
+          elapsedSeconds++;
+        });
+      } else {
+        _gameTimer?.cancel(); // Stop when reaching the cap
+      }
+    });
   }
 
   void toggleSelection(String word) {
@@ -54,16 +61,45 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     });
   }
 
+  void showWinPopup(int attempts) {
+    int attemptsTaken = 4 - attempts;
+    int score = 10000 - (attemptsTaken * 2500) - (elapsedSeconds * 10); // Score calculator for popup
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('🎉 Congratulations!'),
+        content: Text('You found all categories!\nFinal Score: $score'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/connectionsleaderboard'); //Navigate to Leaderboard
+            },
+            child: const Text('View Leaderboard'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void checkSelection() {
     if (selectedWords.length == 4) {
       bool isCorrect = false;
       bool oneAway = false;
-      
+
       for (var category in categories.values) {
         Set<String> correctSet = category.toSet();
         Set<String> selectionSet = selectedWords.toSet();
-        
-        if (selectionSet.containsAll(correctSet) && correctSet.containsAll(selectionSet)) {
+
+        if (selectionSet.containsAll(correctSet) &&
+            correctSet.containsAll(selectionSet)) {
           isCorrect = true;
           foundCategories.add(category.toString());
           words.removeWhere((word) => selectionSet.contains(word));
@@ -72,6 +108,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           oneAway = true;
         }
       }
+
       setState(() {
         if (isCorrect) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -91,7 +128,13 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         }
         selectedWords.clear();
 
+        if (foundCategories.length == categories.length) {
+          _gameTimer?.cancel(); // Stop the timer when game is won
+          showWinPopup(attemptsLeft);
+        }
+
         if (attemptsLeft == 0) {
+          _gameTimer?.cancel(); // Stop the timer when out of attempts
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Game Over! No attempts left.")),
           );
@@ -104,17 +147,32 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text("Connections"),
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Center(
+              child: Text(
+                "⏱️ $elapsedSeconds s", // Timer display
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
           IconButton(
-            icon: Icon(Icons.help_outline),
+            icon: const Icon(Icons.help_outline),
             tooltip: 'How to Play',
             onPressed: () {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text('How to Play Connections'),
-                  content: Text(
+                  title: const Text('How to Play Connections'),
+                  content: const Text(
                     "Welcome to Connections!\n\n"
                     "You will be given a set of 16 words.\n\n"
                     "Your goal is to find four groups of four words that share a common theme.\n\n"
@@ -126,7 +184,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: Text('Got it'),
+                      child: const Text('Got it'),
                     ),
                   ],
                 ),
@@ -139,13 +197,18 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 10),
-          Text("Attempts Left: $attemptsLeft", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            "Attempts Left: $attemptsLeft",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           // Set a fixed height to fit all the words
-          Expanded( // This ensures the words grid takes up available space
+          Expanded(
+            // This ensures the words grid takes up available space
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(), // Disable scrolling (for better size control, the user shouldn't need to scroll)
+                physics: const NeverScrollableScrollPhysics(),
+                // Disable scrolling (for better size control, the user shouldn't need to scroll)
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   childAspectRatio: 2,
@@ -184,7 +247,9 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
             width: 200,
             height: 50,
             child: ElevatedButton(
-              onPressed: (selectedWords.length == 4 && attemptsLeft > 0) ? checkSelection : null,
+              onPressed: (selectedWords.length == 4 && attemptsLeft > 0)
+                  ? checkSelection
+                  : null,
               child: const Text("Submit", style: TextStyle(fontSize: 18)),
             ),
           ),
@@ -192,5 +257,11 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _gameTimer?.cancel();
+    super.dispose();
   }
 }

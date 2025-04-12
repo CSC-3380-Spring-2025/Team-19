@@ -7,6 +7,14 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("WordStorm", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.pushNamed(context, '/profile');
+            }
+          )
+        ]
       ),
       body: Center(
         child: Column(

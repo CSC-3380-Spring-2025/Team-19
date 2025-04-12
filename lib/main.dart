@@ -8,6 +8,7 @@ import 'wordladder_frontend.dart';
 import 'letterquest_leaderboard_page.dart';
 import 'wordladder_leaderboard_page.dart';
 import 'connections_leaderboard_page.dart';
+import 'profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,12 +29,13 @@ class MyApp extends StatelessWidget {
       routes: {
         '/gameselection': (context) => GameSelectionScreen(), 
         '/leaderboardselection': (context) => LeaderboardSelectionScreen(),
-        '/connections': (context) => ConnectionsGameApp(),
+        '/connections': (context) => ConnectionsGameScreen(),
         '/letterquest': (context) => LetterQuestGame(),
         '/wordladder': (context) => WordLadderGame(),
         '/letterquestleaderboard': (context) => LetterQuestLeaderboard(),
         '/wordladderleaderboard' : (context) => WordLadderLeaderboard(), 
         '/connectionsleaderboard' : (context) => ConnectionsLeaderboard(), 
+        '/profile': (context) => ProfilePage(),
       },
     );
   }
