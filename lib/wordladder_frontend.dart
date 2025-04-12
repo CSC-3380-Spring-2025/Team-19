@@ -50,7 +50,14 @@ class _WordLadderGameApp extends State<WordLadderGame> {
                     resetGame();
                   },
                   child: Text("Play Again"),
-                )
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, '/wordladderleaderboard'); //Navigate to leaderboard
+                  },
+                  child: const Text('View Leaderboard'),
+                ),
               ],
             ),
           );
