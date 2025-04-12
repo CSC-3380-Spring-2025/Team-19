@@ -33,10 +33,12 @@ class _WordLadderGameApp extends State<WordLadderGame> {
 
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (secondsElapsed < 999 && score > 0) {
+      if (secondsElapsed < 999) {
         setState(() {
           secondsElapsed++;
-          score = (score - 10).clamp(0, 10000);
+          if (score > 0) {
+            score = (score - 10).clamp(0, 10000);
+          }
         });
       } else {
         _timer.cancel();
