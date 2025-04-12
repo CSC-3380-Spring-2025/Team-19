@@ -20,9 +20,10 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "WordStorm",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            const SizedBox(height: 10),
+            Image.asset(
+              '../assets/images/wordstorm.png',
+              height: 500,
             ),
             SizedBox(height: 20),
             ElevatedButton(

@@ -197,6 +197,11 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 10),
+          Image.asset(
+            '../assets/images/connections_logo.png',
+            height: 100,
+          ),
+          const SizedBox(height: 10),
           Text(
             "Attempts Left: $attemptsLeft",
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -205,13 +210,13 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           Expanded(
             // This ensures the words grid takes up available space
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(100),
               child: GridView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 // Disable scrolling (for better size control, the user shouldn't need to scroll)
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  childAspectRatio: 2,
+                  childAspectRatio: 4,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
@@ -245,7 +250,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           const SizedBox(height: 5), // Space before the submit button
           SizedBox(
             width: 200,
-            height: 50,
+            height: 75,
             child: ElevatedButton(
               onPressed: (selectedWords.length == 4 && attemptsLeft > 0)
                   ? checkSelection
@@ -253,7 +258,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               child: const Text("Submit", style: TextStyle(fontSize: 18)),
             ),
           ),
-          const SizedBox(height: 5),
+          const SizedBox(height: 40),
         ],
       ),
     );
