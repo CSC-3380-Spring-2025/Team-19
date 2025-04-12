@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'keyboard_ui.dart'; 
 
 class LetterQuestGame extends StatefulWidget {
   @override
@@ -82,7 +83,10 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
           ),
         ],
       ),
-      body: Center(
+body: Column(
+  children: [
+    Expanded(
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -93,11 +97,34 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
             ),
             SizedBox(height: 20),
             gameLogic.isGameOver
-                ? Text("You got it!", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-                : Text("Incorrect Attempts: ${gameLogic.incorrectAttempts}", style: TextStyle(fontSize: 16)),
+                ? Text("You got it!",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                : Text("Incorrect Attempts: ${gameLogic.incorrectAttempts}",
+                    style: TextStyle(fontSize: 16)),
           ],
         ),
       ),
+    ),
+    SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: WordLadderKeyboard(
+          onEnter: () {
+              // Need to add onEnter functionality for onscreen keyboard. Look at letter_quest_input.dart?
+          },
+          onDelete: () {
+            // Need to add onDelete functionality (only applies to user trying to solve). Look at letter_quest_input.dart?
+          },
+          onKeyPress: (key) {
+            setState(() {
+              gameLogic.onGuess(key);
+            });
+          },
+        ),
+      ),
+    ),
+  ],
+),
     );
   }
 }

@@ -88,6 +88,13 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
             },
             child: const Text('OK'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/connectionsleaderboard'); //Navigate to Leaderboard
+            },
+            child: const Text('View Leaderboard'),
+          ),
         ],
       ),
     );
