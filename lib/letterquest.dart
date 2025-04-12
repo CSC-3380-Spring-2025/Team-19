@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'keyboard_ui.dart'; 
 
 class LetterQuestGame extends StatefulWidget {
@@ -9,6 +10,32 @@ class LetterQuestGame extends StatefulWidget {
 class _LetterQuestGameState extends State<LetterQuestGame> {
   final LetterQuestGameLogic gameLogic = LetterQuestGameLogic();
 
+  late Timer _timer;
+  int secondsElapsed = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (secondsElapsed < 999) {
+        setState(() {
+          secondsElapsed++;
+        });
+      } else {
+        _timer.cancel();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +43,15 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
       appBar: AppBar(
         title: Text('Letter Quest Game'),
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Center(
+              child: Text(
+                "${secondsElapsed}s",
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
           IconButton(
             icon: Icon(Icons.help_outline),
             tooltip: 'How to Play',
