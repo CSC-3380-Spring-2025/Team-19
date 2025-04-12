@@ -73,7 +73,7 @@ class WordLadderKeyboard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildSpecialKey("Enter", onEnter),
-        ...letters.map((letter) => _buildKey(letter)).toList(),
+        ...letters.map((letter) => _buildKey(letter)),
         _buildSpecialKey("Delete", onDelete),
       ],
     );
