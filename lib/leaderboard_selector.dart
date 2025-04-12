@@ -1,38 +1,72 @@
 import 'package:flutter/material.dart';
 
-
-
 class LeaderboardSelectionScreen extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
+      backgroundColor: Colors.deepPurple[50],
       appBar: AppBar(
-        title: Text("View a Leaderboard"),
+        backgroundColor: Colors.deepPurple,
+        title: const Text(
+          "View a Leaderboard",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.person),
+            icon: const Icon(Icons.person),
             onPressed: () {
               Navigator.pushNamed(context, '/profile');
-            }
-          )
-        ]
-      ),
-      body: GridView.count(
-        crossAxisCount: 2,
-        padding: EdgeInsets.all(16),
-        children: [
-          _buildGameTile(context, 'Connections', 'C:\Users\jonma\Downloads\Team-19 3-2-25\Team-19\lib\logos\CONNECTIONS.png', () {
-            Navigator.pushNamed(context, '/connectionsleaderboard');
-          }),
-          _buildGameTile(context, 'LetterQuest', 'C:UsersjonmaDownloadsTeam-19 3-2-25Team-19liblogosLETTER QUEST.png', () {
-            Navigator.pushNamed(context, '/letterquestleaderboard');
-          }),
-          _buildGameTile(context, 'Word Ladder', 'C:UsersjonmaDownloadsTeam-19 3-2-25Team-19liblogosWORD LADDER.png', () {
-            Navigator.pushNamed(context, '/wordladderleaderboard');
-          }),
+            },
+          ),
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Text(
+                "Pick a Leaderboard:",
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple[800],
+                ),
+              ),
+            ),
+            const SizedBox(height: 32),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildGameTile(
+                    context,
+                    'Connections',
+                    '../assets/images/connections_logo.png',
+                    () => Navigator.pushNamed(context, '/connectionsleaderboard'),
+                  ),
+                  const SizedBox(width: 16),
+                  _buildGameTile(
+                    context,
+                    'LetterQuest',
+                    '../assets/images/letterquest_logo.png',
+                    () => Navigator.pushNamed(context, '/letterquestleaderboard'),
+                  ),
+                  const SizedBox(width: 16),
+                  _buildGameTile(
+                    context,
+                    'Word Ladder',
+                    '../assets/images/wordladder_logo.png',
+                    () => Navigator.pushNamed(context, '/wordladderleaderboard'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -41,14 +75,33 @@ class LeaderboardSelectionScreen extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 5,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(imagePath, width: 80, height: 80), // Ensure these assets exist
-            SizedBox(height: 10),
-            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ],
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          width: 300,
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 180,
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
