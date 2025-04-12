@@ -3,20 +3,9 @@ import 'dart:math';
 import 'dart:async';
 
 void main() {
-  runApp(const ConnectionsGameApp());
+  runApp(const ConnectionsGameScreen());
 }
 
-class ConnectionsGameApp extends StatelessWidget {
-  const ConnectionsGameApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ConnectionsGameScreen(),
-    );
-  }
-}
 
 class ConnectionsGameScreen extends StatefulWidget {
   const ConnectionsGameScreen({super.key});
@@ -158,6 +147,12 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text("Connections"),
         actions: [
           Padding(

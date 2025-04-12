@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/gameselection': (context) => GameSelectionScreen(), 
         '/leaderboardselection': (context) => LeaderboardSelectionScreen(),
-        '/connections': (context) => ConnectionsGameApp(),
+        '/connections': (context) => ConnectionsGameScreen(),
         '/letterquest': (context) => LetterQuestGame(),
         '/wordladder': (context) => WordLadderGame(),
         '/letterquestleaderboard': (context) => LetterQuestLeaderboard(),
