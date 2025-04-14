@@ -1,7 +1,7 @@
 # Name of the Project : Team 19
 # Members
 Project Manager: Jonathan Breaux (Jbreaux05)\
-Communications Lead: Jonathan Martinez (Jonathan Martinez12])\
+Communications Lead: Jonathan Martinez (Jonathan Martinez12)\
 Git Master: Beau Fontenot (bfontenot23)\
 Design Lead: Skylar Flemming (SkyMFlem777)\
 Quality Assurance Tester: Bryce Shifflett (bshiff2)

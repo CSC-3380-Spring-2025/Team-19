@@ -28,6 +28,15 @@ class GameSelectionScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 8), // Add spacing between the title and the new text
+            Text(
+              "Timer will start upon clicking a game",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.deepPurple[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 32),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
