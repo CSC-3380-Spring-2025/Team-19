@@ -1,109 +1,86 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: Text("Word Ladder Keyboard")),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            WordLadderKeyboard(
-              onEnter: () => print("Enter Pressed"),
-              onDelete: () => print("Delete Pressed"),
-              onKeyPress: (key) => print("Key Pressed: $key"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class WordLadderKeyboard extends StatelessWidget {
+  final Set<String> guessedLetters;
+  final String phrase;
   final VoidCallback onEnter;
   final VoidCallback onDelete;
   final Function(String) onKeyPress;
 
-  WordLadderKeyboard({
+  const WordLadderKeyboard({
+    super.key,
+    required this.guessedLetters,
+    required this.phrase,
     required this.onEnter,
     required this.onDelete,
     required this.onKeyPress,
   });
 
+  static const List<String> _qwertyLayout = [
+    "QWERTYUIOP",
+    "ASDFGHJKL",
+    "ZXCVBNM"
+  ];
+
   @override
   Widget build(BuildContext context) {
-    List<String> keys = [
-      'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P',
-      'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L',
-      'Z', 'X', 'C', 'V', 'B', 'N', 'M'
-    ];
-
     return Container(
-      padding: EdgeInsets.all(10.0),
-      color: Colors.grey[300],
+      color: Colors.grey[200],
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildRow(keys.sublist(0, 10)),
-          _buildRow(keys.sublist(10, 19), padding: true),
-          _buildBottomRow(keys.sublist(19, 26)),
+          ..._qwertyLayout.map(_buildKeyRow).toList(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildSpecialKey("Enter", onEnter),
+              const SizedBox(width: 10),
+              _buildSpecialKey("Delete", onDelete),
+            ],
+          )
         ],
       ),
     );
   }
 
-  Widget _buildRow(List<String> letters, {bool padding = false}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: padding ? 16.0 : 0.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: letters.map((letter) => _buildKey(letter)).toList(),
-      ),
-    );
-  }
-
-  Widget _buildBottomRow(List<String> letters) {
+  Widget _buildKeyRow(String row) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildSpecialKey("Enter", onEnter),
-        ...letters.map((letter) => _buildKey(letter)),
-        _buildSpecialKey("Delete", onDelete),
-      ],
+      children: row.split('').map((char) => _buildKey(char)).toList(),
     );
   }
 
-  Widget _buildKey(String letter) {
+  Widget _buildKey(String char) {
+    bool isGuessed = guessedLetters.contains(char);
+    Color bgColor = isGuessed
+        ? (phrase.contains(char) ? Colors.green : Colors.grey)
+        : Colors.white;
+
     return Padding(
-      padding: EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(4.0),
       child: ElevatedButton(
-        onPressed: () => onKeyPress(letter),
+        onPressed: isGuessed ? null : () => onKeyPress(char),
         style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-          minimumSize: Size(42, 42),
+          backgroundColor: bgColor,
+          foregroundColor: Colors.black,
+          minimumSize: const Size(36, 36),
+          padding: EdgeInsets.zero,
         ),
-        child: Text(letter, style: TextStyle(fontSize: 18)),
+        child: Text(char, style: const TextStyle(fontSize: 18)),
       ),
     );
   }
 
-  Widget _buildSpecialKey(String label, VoidCallback onPressed) {
-    return Padding(
-      padding: EdgeInsets.all(5.0),
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-          minimumSize: Size(72, 42),
-        ),
-        child: Text(label, style: TextStyle(fontSize: 18)),
+  Widget _buildSpecialKey(String label, VoidCallback callback) {
+    return ElevatedButton(
+      onPressed: callback,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.purple[100],
+        foregroundColor: Colors.black,
+        minimumSize: const Size(72, 40),
       ),
+      child: Text(label),
     );
   }
 }
