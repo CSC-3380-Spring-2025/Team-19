@@ -1,116 +1,300 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'dart:async';
+import 'keyboard_ui.dart';
 
-// Code for handling keyboard input for the Letter Quest game.
-// This implementation supports both physical keyboard input and will be modified later to support an on-screen keyboard.
-// Due to our unfamiliarity with Dart, extensive comments have been added to make it easier to understand/modify in the future.
-
-// Stateful widget to handle user input for the Letter Quest game
-class LetterQuestInput extends StatefulWidget {
-  final String phrase; // The phrase to be guessed
-  final Function(String) onGuess; // Callback for when a letter or full phrase is guessed
-  final bool isGuessingLetter; // Determines if the user is guessing a single letter or solving the phrase
-  
-  // Constructor for LetterQuestInput
-  const LetterQuestInput({
-    required this.phrase,
-    required this.onGuess,
-    required this.isGuessingLetter,
-    super.key,
-  });
-
+class LetterQuestGame extends StatefulWidget {
   @override
-  LetterQuestInputState createState() => LetterQuestInputState(); // Connects the widget to the state class
+  _LetterQuestGameState createState() => _LetterQuestGameState();
 }
 
-// Created to allow the stateful widget that has user input to change with the input
-class LetterQuestInputState extends State<LetterQuestInput> {
-  late FocusNode _focusNode; // Keeps track of input focus
-  Set<String> guessedLetters = {}; // Stores guessed letters to prevent duplicate guesses
-  String currentAttempt = ""; // Stores the user's current phrase attempt
+class _LetterQuestGameState extends State<LetterQuestGame> {
+  final LetterQuestGameLogic gameLogic = LetterQuestGameLogic();
+  late Timer _timer;
+  int secondsElapsed = 0;
+  bool isSolvingPhrase = false;
+  String fullPhraseAttempt = "";
 
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode(); // Initializes focus node for managing keyboard input
+    _startTimer();
   }
 
   @override
   void dispose() {
-    _focusNode.dispose(); // Disposes of focus node to avoid memory leaks
+    _timer.cancel();
     super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (secondsElapsed < 999) {
+        setState(() {
+          secondsElapsed++;
+        });
+      } else {
+        _timer.cancel();
+      }
+    });
+  }
+
+  void handleGuess(String guess) {
+    setState(() {
+      gameLogic.onGuess(guess);
+      if (gameLogic.isGameOver) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('🎉 You Won!'),
+            content: Text('You solved the puzzle in $secondsElapsed seconds!'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              )
+            ],
+          ),
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _focusNode.requestFocus(), // Requests focus when the user taps on this widget
-      child: KeyboardListener(
-        focusNode: _focusNode, // Ensures the widget can capture keyboard events
-        onKeyEvent: (KeyEvent event) {
-          if (event is KeyDownEvent) { // Checks if a key is pressed down
-            final keyLabel = event.logicalKey.keyLabel.toUpperCase();
-
-            // If the user is guessing a single letter
-            if (widget.isGuessingLetter) {
-              if (keyLabel.length == 1 && keyLabel.contains(RegExp(r'[A-Z]'))) {
-                onLetterGuess(keyLabel);
-              }
-            }
-            // If the user is attempting to solve the phrase
-            else {
-              if (keyLabel.length == 1 && keyLabel.contains(RegExp(r'[A-Z ]'))) {
-                onPhraseInput(keyLabel);
-              }
-              // If backspace is pressed, delete the last character of phrase input
-              else if (event.logicalKey == LogicalKeyboardKey.backspace) {
-                onDelete();
-              }
-              // If enter is pressed, attempt to submit the full phrase guess
-              else if (event.logicalKey == LogicalKeyboardKey.enter) {
-                onEnter();
-              }
-            }
-          }
-        },
-        child: const SizedBox.shrink(), // Placeholder for integration with on-screen keyboard UI (will require modification later)
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Letter Quest Game'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Center(
+              child: Text(
+                "${secondsElapsed}s",
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: 'How to Play',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('How to Play LetterQuest'),
+                  content: Text(
+                    "Welcome to LetterQuest!\n\n"
+                    "You will be given a blank sentence with missing letters.\n\n"
+                    "A category hint will help you narrow down the answer.\n\n"
+                    "You have two options on your turn:\n\n"
+                    "1. Guess a letter - If the letter is in the sentence, it will be revealed.\n\n"
+                    "2. Guess the full sentence - If correct, you win!\n\n"
+                    "Your score starts at a base value and decreases with each guessed letter and incorrect sentence attempt.\n\n"
+                    "Once the puzzle is solved, your score will also take time into account.\n\n"
+                    "Try to solve the puzzle with the fewest guesses and as quickly as possible!",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Got it'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          const SizedBox(height: 10),
+          Image.asset(
+            'assets/images/letterquest_logo.png',
+            height: 200,
+          ),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LetterQuestPhraseDisplay(
+                    phrase: gameLogic.phrase,
+                    hint: gameLogic.hint,
+                    guessedLetters: gameLogic.guessedLetters,
+                  ),
+                  SizedBox(height: 20),
+                  gameLogic.isGameOver
+                      ? Text("You got it!",
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                      : Text("Incorrect Attempts: ${gameLogic.incorrectAttempts}",
+                          style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+          ),
+          if (!isSolvingPhrase) ...[
+            ElevatedButton(
+              onPressed: () => setState(() {
+                isSolvingPhrase = true;
+                fullPhraseAttempt = "";
+              }),
+              child: Text("Solve the Puzzle"),
+            ),
+          ],
+          if (isSolvingPhrase) ...[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  TextField(
+                    onChanged: (value) => fullPhraseAttempt = value.toUpperCase(),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Enter your full phrase guess",
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      bool correct = fullPhraseAttempt == gameLogic.phrase;
+                      if (correct) {
+                        setState(() {
+                          gameLogic.onGuess(fullPhraseAttempt);
+                          isSolvingPhrase = false;
+                        });
+                      } else {
+                        setState(() {
+                          isSolvingPhrase = false;
+                          fullPhraseAttempt = "";
+                          gameLogic.incorrectAttempts++;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Incorrect phrase guess. Try again.")),
+                        );
+                      }
+                    },
+                    child: Text("Submit"),
+                  ),
+                ],
+              ),
+            ),
+          ] else ...[
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: WordLadderKeyboard(
+                  guessedLetters: gameLogic.guessedLetters,
+                  phrase: gameLogic.phrase,
+                  onEnter: () {},
+                  onDelete: () {},
+                  onKeyPress: (key) {
+                    setState(() {
+                      gameLogic.onGuess(key);
+                    });
+                  },
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
+}
 
-  // Handles guessing individual letters
-  void onLetterGuess(String letter) {
-    if (!guessedLetters.contains(letter)) { // Ensures letters are not guessed more than once
-      setState(() {
-        guessedLetters.add(letter); // Add guessed letter to the set
-      });
-      widget.onGuess(letter); // Notify the game of the guessed letter
-    }
+class LetterQuestPhraseDisplay extends StatelessWidget {
+  final String phrase;
+  final String hint;
+  final Set<String> guessedLetters;
+
+  const LetterQuestPhraseDisplay({
+    super.key,
+    required this.phrase,
+    required this.hint,
+    required this.guessedLetters,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: phrase.split('').map((char) {
+            return char == ' '
+                ? SizedBox(width: 16.0)
+                : Container(
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(width: 2.0)),
+                    ),
+                    child: Text(
+                      guessedLetters.contains(char.toUpperCase()) ? char : '_',
+                      style: TextStyle(
+                        fontSize: _calculateFontSize(context, phrase.length),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
+          }).toList(),
+        ),
+        SizedBox(height: 20.0),
+        Container(
+          padding: EdgeInsets.all(12.0),
+          decoration: BoxDecoration(
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Text(
+            hint,
+            style: TextStyle(fontSize: 16.0),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
   }
 
-  // Handles input when the user is solving the phrase
-  void onPhraseInput(String letter) {
-    setState(() {
-      currentAttempt += letter; // Adds the letter to the current phrase input
-    });
+  double _calculateFontSize(BuildContext context, int length) {
+    double baseSize = 24.0;
+    return (length > 15) ? baseSize - (length - 15) * 0.5 : baseSize;
+  }
+}
+
+class LetterQuestGameLogic {
+  final String phrase = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
+  final String hint = "PANGRAM";
+  Set<String> guessedLetters = {};
+  int incorrectAttempts = 0;
+  bool isGameOver = false;
+
+  List<String> get displayPhrase {
+    return phrase.split('').map((char) {
+      if (char == ' ' || char == "'") {
+        return char;
+      }
+      return guessedLetters.contains(char.toUpperCase()) ? char : '_';
+    }).toList();
   }
 
-  // Deletes the last character in the current phrase input
-  void onDelete() {
-    if (currentAttempt.isNotEmpty) { // Ensure there's a character to delete
-      setState(() {
-        currentAttempt = currentAttempt.substring(0, currentAttempt.length - 1); // Remove the last letter
-      });
-    }
-  }
-
-  // Submits the current phrase attempt
-  void onEnter() {
-    if (currentAttempt.isNotEmpty) { // Ensure input is not empty before submitting
-      widget.onGuess(currentAttempt); // Notify the game of the full phrase guess
-      setState(() {
-        currentAttempt = ""; // Clear input for the next attempt
-      });
+  void onGuess(String guess) {
+    if (isGameOver) return;
+    if (guess.length == 1) {
+      if (!guessedLetters.contains(guess.toUpperCase())) {
+        guessedLetters.add(guess.toUpperCase());
+        if (!phrase.contains(guess.toUpperCase())) {
+          incorrectAttempts++;
+        }
+      }
+    } else {
+      if (guess.toUpperCase() == phrase) {
+        isGameOver = true;
+      } else {
+        incorrectAttempts++;
+      }
     }
   }
 }
