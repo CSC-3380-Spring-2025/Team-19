@@ -164,6 +164,11 @@ class _WordLadderGameApp extends State<WordLadderGame> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 10),
+          Image.asset(
+            '../assets/images/wordladder_logo.png',
+            height: 300,
+          ),
             Text(
               "Word Ladder Progress:",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),

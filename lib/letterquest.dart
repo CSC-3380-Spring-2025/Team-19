@@ -85,6 +85,11 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
       ),
 body: Column(
   children: [
+    const SizedBox(height: 10),
+          Image.asset(
+            '../assets/images/letterquest_logo.png',
+            height: 300,
+          ),
     Expanded(
       child: Center(
         child: Column(
