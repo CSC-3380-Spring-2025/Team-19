@@ -167,7 +167,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             const SizedBox(height: 10),
           Image.asset(
             '../assets/images/wordladder_logo.png',
-            height: 300,
+            height: 250,
           ),
             Text(
               "Word Ladder Progress:",

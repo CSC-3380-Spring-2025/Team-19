@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'keyboard_ui.dart'; // your onscreen keyboard widget
+import 'keyboard_ui.dart';
 
 class LetterQuestGame extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         children: [
           const SizedBox(height: 10),
           Image.asset(
-            '',
+            '../assets/images/letterquest_logo.png',
             height: 200,
           ),
           _buildPhraseDisplay(),
