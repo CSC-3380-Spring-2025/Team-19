@@ -167,7 +167,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             const SizedBox(height: 10),
           Image.asset(
             'assets/images/wordladder_logo.png',
-            height: 300,
+            height: 250,
           ),
             Text(
               "Word Ladder Progress:",
@@ -182,6 +182,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             SizedBox(height: 20),
             TextField(
               controller: wordController,
+              onSubmitted: (_) => checkGuess(),
               decoration: InputDecoration(labelText: "Enter your guess"),
             ),
             SizedBox(height: 10),
