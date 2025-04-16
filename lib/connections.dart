@@ -198,7 +198,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         children: [
           const SizedBox(height: 10),
           Image.asset(
-            '../assets/images/connections_logo.png',
+            'assets/images/connections_logo.png',
             height: 100,
           ),
           const SizedBox(height: 10),
