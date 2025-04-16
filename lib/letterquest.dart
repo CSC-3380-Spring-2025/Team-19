@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'keyboard_ui.dart'; // your onscreen keyboard widget
+import 'dart:async';
+import 'keyboard_ui.dart';
 
 class LetterQuestGame extends StatefulWidget {
   @override
@@ -15,11 +16,77 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
   int incorrectAttempts = 0;
   bool isGameOver = false;
 
+  late Timer _timer;
+  int secondsElapsed = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (secondsElapsed < 999) {
+        setState(() {
+          secondsElapsed++;
+        });
+      } else {
+        _timer.cancel();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Letter Quest Game"),
+        title: Text("Letter Quest"),
+        actions: [
+          Row(
+            children: [
+              Icon(Icons.timer),
+              Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Text("$secondsElapsed s"),
+              ),
+            ],
+          ),
+          IconButton(
+            icon: Icon(Icons.help_outline),
+            tooltip: 'How to Play',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text("How to Play Letter Quest"),
+                  content: Text(
+                    "Welcome to Letter Quest!\n\n"
+                    "🧩 You'll see a blank phrase, and your job is to guess the letters in it.\n\n"
+                    "💡 A hint is provided to help you guess the phrase.\n\n"
+                    "🎯 You can:\n"
+                    " - Click letters on the keyboard to guess them one at a time.\n"
+                    " - Click 'Solve the Puzzle' to guess the full phrase.\n\n"
+                    "⚠️ Incorrect guesses will be tracked, and you’ll be timed!\n\n"
+                    "⏱ Try to solve the phrase with the fewest mistakes and in the shortest time!",
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Got it!"),
+                    )
+                  ],
+                ),
+              );
+            },
+          )
+        ],
       ),
       body: Column(
         children: [
@@ -29,7 +96,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
             height: 200,
           ),
           _buildPhraseDisplay(),
-          Text(hint),
+          Text(hint, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
           SizedBox(height: 10),
           Text("Incorrect Attempts: $incorrectAttempts"),
           SizedBox(height: 20),
@@ -106,7 +173,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
                   context: context,
                   builder: (_) => AlertDialog(
                     title: Text("🎉 You got it!"),
-                    content: Text("Congratulations! You solved it."),
+                    content: Text("Congratulations! You solved it in $secondsElapsed seconds."),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
