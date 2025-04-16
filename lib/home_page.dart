@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
             Image.asset(
-              '../assets/images/wordstorm.png',
+              'assets/images/wordstorm.png',
               height: 500,
             ),
             SizedBox(height: 20),
