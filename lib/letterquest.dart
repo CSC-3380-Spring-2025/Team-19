@@ -7,6 +7,7 @@ class LetterQuestGame extends StatefulWidget {
 }
 
 class _LetterQuestGameState extends State<LetterQuestGame> {
+  final TextEditingController _phraseController = TextEditingController();
   final String phrase = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
   final String hint = "PANGRAM";
   Set<String> guessedLetters = {};
@@ -25,7 +26,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         children: [
           const SizedBox(height: 10),
           Image.asset(
-            '',
+            'assets/images/letterquest_logo.png',
             height: 200,
           ),
           _buildPhraseDisplay(),
@@ -76,6 +77,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         setState(() {
           isSolvingPhrase = true;
           fullPhraseAttempt = "";
+          _phraseController.clear();
         });
       },
       child: Text("Solve the Puzzle"),
@@ -88,7 +90,9 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
       child: Column(
         children: [
           TextField(
+            controller: _phraseController,
             onChanged: (value) => fullPhraseAttempt = value.toUpperCase(),
+            onSubmitted: (_) => _submitPhraseGuess(), // Handle Enter key
             decoration: InputDecoration(
               labelText: "Enter full phrase",
               border: OutlineInputBorder(),
@@ -96,40 +100,43 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
           ),
           SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () {
-              bool isCorrect = fullPhraseAttempt == phrase;
-              if (isCorrect) {
-                setState(() {
-                  isGameOver = true;
-                });
-                showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    title: Text("🎉 You got it!"),
-                    content: Text("Congratulations! You solved it."),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("OK"),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                setState(() {
-                  incorrectAttempts++;
-                  isSolvingPhrase = false;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Incorrect guess. Try again!")),
-                );
-              }
-            },
+            onPressed: _submitPhraseGuess,
             child: Text("Submit Guess"),
           ),
         ],
       ),
     );
+  }
+
+  void _submitPhraseGuess() {
+    fullPhraseAttempt = _phraseController.text.toUpperCase(); // <-- Added
+    bool isCorrect = fullPhraseAttempt == phrase;
+    if (isCorrect) {
+      setState(() {
+        isGameOver = true;
+      });
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text("🎉 You got it!"),
+          content: Text("Congratulations! You solved it."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } else {
+      setState(() {
+        incorrectAttempts++;
+        isSolvingPhrase = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Incorrect guess. Try again!")),
+      );
+    }
   }
 
   void _handleLetterGuess(String letter) {
@@ -139,5 +146,11 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         incorrectAttempts++;
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _phraseController.dispose(); 
+    super.dispose();
   }
 }
