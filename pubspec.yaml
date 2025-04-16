@@ -39,6 +39,7 @@ dependencies:
   provider: ^6.1.2
   sqflite: ^2.4.2
   path: ^1.9.1
+  path_provider: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -63,8 +64,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-assets:
-  - assets/images/connections_logo.png
-  - assets/images/letterquest_logo.png
-  - assets/images/wordladder_logo.png
-  - assets/images/wordstorm.png
+  assets:
+    - assets/images/connections_logo.png
+    - assets/images/letterquest_logo.png
+    - assets/images/wordladder_logo.png
+    - assets/images/wordstorm.png
