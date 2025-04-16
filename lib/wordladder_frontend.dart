@@ -182,6 +182,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             SizedBox(height: 20),
             TextField(
               controller: wordController,
+              onSubmitted: (_) => checkGuess(),
               decoration: InputDecoration(labelText: "Enter your guess"),
             ),
             SizedBox(height: 10),
