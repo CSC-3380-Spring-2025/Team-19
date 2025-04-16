@@ -30,7 +30,7 @@ class WordLadderKeyboard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ..._qwertyLayout.map(_buildKeyRow).toList(),
+          ..._qwertyLayout.map(_buildKeyRow),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -202,7 +202,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         children: [
           const SizedBox(height: 10),
           Image.asset(
-            '../assets/images/connections_logo.png',
+            'assets/images/connections_logo.png',
             height: 100,
           ),
           const SizedBox(height: 10),
@@ -213,14 +213,13 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           // Set a fixed height to fit all the words
           Expanded(
             // This ensures the words grid takes up available space
-            child: Padding(
-              padding: const EdgeInsets.all(100),
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                // Disable scrolling (for better size control, the user shouldn't need to scroll)
+                physics: const NeverScrollableScrollPhysics(), // Prevents the user from scrolling, they should have no need to 
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
-                  childAspectRatio: 4,
+                  childAspectRatio: 4, // May need to adjust to fit more nicely in the future if more things get added to the page
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),

@@ -37,6 +37,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   english_words: ^4.0.0
   provider: ^6.1.2
+  sqflite: ^2.3.0
+  path_provider: ^2.1.1
+  path: ^1.8.3
+
 
 dev_dependencies:
   flutter_test:
@@ -61,8 +65,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-assets:
-  - assets/images/connections_logo.png
-  - assets/images/letterquest_logo.png
-  - assets/images/wordladder_logo.png
-  - assets/images/wordstorm.png
+  assets:
+    - assets/images/connections_logo.png
+    - assets/images/letterquest_logo.png
+    - assets/images/wordladder_logo.png
+    - assets/images/wordstorm.png
