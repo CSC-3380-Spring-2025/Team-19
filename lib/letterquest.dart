@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'keyboard_ui.dart'; // your onscreen keyboard widget
+import 'keyboard_ui.dart';
 
 class LetterQuestGame extends StatefulWidget {
   @override
