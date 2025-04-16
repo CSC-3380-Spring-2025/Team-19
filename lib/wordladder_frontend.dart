@@ -126,7 +126,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Center(
               child: Text(
-                "${secondsElapsed}s",
+                "⏱️ $secondsElapsed s",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
@@ -135,6 +135,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             icon: Icon(Icons.help_outline),
             tooltip: 'How to Play',
             onPressed: () {
+              _timer.cancel();
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
@@ -149,7 +150,10 @@ class _WordLadderGameApp extends State<WordLadderGame> {
                   ),
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _startTimer();
+                      }, 
                       child: Text('Got it'),
                     ),
                   ],
