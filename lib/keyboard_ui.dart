@@ -33,11 +33,6 @@ class WordLadderKeyboard extends StatelessWidget {
           ..._qwertyLayout.map(_buildKeyRow),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildSpecialKey("Enter", onEnter),
-              const SizedBox(width: 10),
-              _buildSpecialKey("Delete", onDelete),
-            ],
           )
         ],
       ),
@@ -69,18 +64,6 @@ class WordLadderKeyboard extends StatelessWidget {
         ),
         child: Text(char, style: const TextStyle(fontSize: 18)),
       ),
-    );
-  }
-
-  Widget _buildSpecialKey(String label, VoidCallback callback) {
-    return ElevatedButton(
-      onPressed: callback,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.purple[100],
-        foregroundColor: Colors.black,
-        minimumSize: const Size(72, 40),
-      ),
-      child: Text(label),
     );
   }
 }
