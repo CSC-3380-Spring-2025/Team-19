@@ -29,6 +29,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
   @override
   void dispose() {
     _timer.cancel();
+    _phraseController.dispose(); 
     super.dispose();
   }
 
@@ -52,10 +53,14 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         actions: [
           Row(
             children: [
-              Icon(Icons.timer),
               Padding(
                 padding: const EdgeInsets.only(right: 12.0),
-                child: Text("$secondsElapsed s"),
+                child: Center(
+                  child: Text(
+                    "⏱️ $secondsElapsed s",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
             ],
           ),
@@ -63,6 +68,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
             icon: Icon(Icons.help_outline),
             tooltip: 'How to Play',
             onPressed: () {
+              _timer.cancel();
               showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
@@ -79,7 +85,10 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
                   ),
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _startTimer();
+                      },
                       child: Text("Got it!"),
                     )
                   ],
@@ -242,11 +251,5 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         incorrectAttempts++;
       }
     });
-  }
-
-  @override
-  void dispose() {
-    _phraseController.dispose(); 
-    super.dispose();
   }
 }
