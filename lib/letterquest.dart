@@ -112,6 +112,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
           SizedBox(height: 20),
           if (!isSolvingPhrase) _buildSolveButton(),
           if (isSolvingPhrase) _buildPhraseGuessInput(),
+          SizedBox(height: 20),
           if (!isSolvingPhrase && !isGameOver)
             WordLadderKeyboard(
               guessedLetters: guessedLetters,
