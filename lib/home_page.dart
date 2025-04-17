@@ -25,7 +25,6 @@ class HomePage extends StatelessWidget {
               'assets/images/wordstorm.png',
               height: 500,
             ),
-            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                  Navigator.pushNamed(context, '/gameselection');
