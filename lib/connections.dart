@@ -168,6 +168,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
             icon: const Icon(Icons.help_outline),
             tooltip: 'How to Play',
             onPressed: () {
+              _gameTimer?.cancel();
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
@@ -183,7 +184,10 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
                   ),
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _startTimer();
+                      }, 
                       child: const Text('Got it'),
                     ),
                   ],
