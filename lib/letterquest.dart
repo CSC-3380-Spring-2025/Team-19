@@ -180,6 +180,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
             onPressed: () {
               bool isCorrect = fullPhraseAttempt == phrase;
               if (isCorrect) {
+                _timer.cancel();
                 setState(() {
                   isGameOver = true;
                 });
@@ -218,6 +219,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
     fullPhraseAttempt = _phraseController.text.toUpperCase(); // <-- Added
     bool isCorrect = fullPhraseAttempt == phrase;
     if (isCorrect) {
+      _timer.cancel();
       setState(() {
         isGameOver = true;
       });
