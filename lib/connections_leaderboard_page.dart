@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:team_19/db/databasehelper.dart';
+import 'package:team_19/models/user_model.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,13 +31,23 @@ class _ConnectionsLeaderboardPageState extends State<ConnectionsLeaderboard> {
     super.initState();
     leaderboardData = fetchLeaderboard(); // Fetch data when the page loads to keep it up to date when users open the page. 
   }
-
-  // Simulated function to fetch leaderboard data. Will need changing once actual Database is set up. 
+ 
   Future<List<LeaderboardEntry>> fetchLeaderboard() async {
-    await Future.delayed(Duration(seconds: 2)); // Simulate API delay (time taken for the information from the Database to be sent for the page)
+    final List<User> users = await DatabaseHelper.fetchAllUsers();
+    int dateID = 1; //Used in order to ensure the leaderboard loads only that day's entries. It's just a placeholder right now. 
+    //Potentially make it the actual date? Will need to set up database more for it. 
+    List<LeaderboardEntry> entries = []; 
 
-    List<LeaderboardEntry> entries = [//Used for testing the page. Will keep in for now until the Database is set up to pull entries from.
-    // Placements were decided randomly using wheelofnames.com 
+    for (User user in users) {
+      if (user.connectionsScores.containsKey(dateID) && user.connectionsTimes.containsKey(dateID)) {
+        entries.add(
+          LeaderboardEntry(username: user.name, score: user.connectionsScores[dateID]!, timeTaken: user.connectionsTimes[dateID]!),
+        );
+      }
+    }
+
+/*
+    List<LeaderboardEntry> entries = [//Used for testing the page without database entries. Placements were decided randomly using wheelofnames.com 
     LeaderboardEntry(username: "Jonnathan M.", score: 100, timeTaken: 90),
     LeaderboardEntry(username: "Jonnathan B.", score: 80, timeTaken: 120),
     LeaderboardEntry(username: "Beau", score: 75, timeTaken: 123),
@@ -44,6 +56,7 @@ class _ConnectionsLeaderboardPageState extends State<ConnectionsLeaderboard> {
     LeaderboardEntry(username: "Tie Breaker A", score: 80, timeTaken: 100),
     LeaderboardEntry(username: "Tie Breaker B", score: 80, timeTaken: 95),
     ];
+*/
 
     // Sort by score descending, then by time ascending
     entries.sort((a, b) {
