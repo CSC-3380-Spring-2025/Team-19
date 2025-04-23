@@ -1,6 +1,52 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String? userName;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Delay the dialog until after the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showNameDialog();
+    });
+  }
+
+   // Function to show dialog to enter name
+  void _showNameDialog() {
+    TextEditingController nameController = TextEditingController();
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing without input
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter Your Name'),
+          content: TextField(
+            controller: nameController,
+            decoration: InputDecoration(hintText: 'Your name here'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  userName = nameController.text.trim();
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
