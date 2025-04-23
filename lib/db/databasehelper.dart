@@ -4,6 +4,9 @@ import 'package:team_19/models/connections_model.dart';
 import 'package:team_19/models/letterquest_model.dart';
 import 'package:team_19/models/wordladder_model.dart';
 import 'package:team_19/models/user_model.dart';
+import 'package:team_19/data/seed_connections.dart';
+import 'package:team_19/data/seed_letterquest.dart';
+import 'package:team_19/data/seed_wordladder.dart';
 
 class DatabaseHelper {
   static const int _version = 1;
@@ -20,6 +23,13 @@ class DatabaseHelper {
           );
         """);
 
+        await DatabaseHelper.addConnection(connection1);
+        await DatabaseHelper.addConnection(connection2);
+        await DatabaseHelper.addConnection(connection3);
+        await DatabaseHelper.addConnection(connection4);
+        await DatabaseHelper.addConnection(connection5);
+
+
         await db.execute("""
           CREATE TABLE Letterquest(
             id INTEGER PRIMARY KEY NOT NULL, 
@@ -27,6 +37,12 @@ class DatabaseHelper {
             hint TEXT NOT NULL
           );
         """);
+        
+        await DatabaseHelper.addLetterquest(letterquest1);
+        await DatabaseHelper.addLetterquest(letterquest2);
+        await DatabaseHelper.addLetterquest(letterquest3);
+        await DatabaseHelper.addLetterquest(letterquest4);
+        await DatabaseHelper.addLetterquest(letterquest5);
 
         await db.execute("""
           CREATE TABLE Wordladder(
@@ -34,6 +50,12 @@ class DatabaseHelper {
             wordList TEXT NOT NULL
           );
         """);
+
+        await DatabaseHelper.addWordladder(wordLadder1);
+        await DatabaseHelper.addWordladder(wordLadder2);
+        await DatabaseHelper.addWordladder(wordLadder3);
+        await DatabaseHelper.addWordladder(wordLadder4);
+        await DatabaseHelper.addWordladder(wordLadder5);
 
         await db.execute("""
           CREATE TABLE Users(
