@@ -194,6 +194,13 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
                         onPressed: () => Navigator.pop(context),
                         child: Text("OK"),
                       ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.pushNamed(context, '/letterquestleaderboard'); //Navigate to Leaderboard
+                        },
+                        child: const Text('View Leaderboard'),
+                      ),
                     ],
                   ),
                 );
@@ -225,7 +232,8 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
       });
       showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
           title: Text("🎉 You got it!"),
           content: Text("Congratulations! You solved it."),
           actions: [
@@ -233,6 +241,13 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
               onPressed: () => Navigator.pop(context),
               child: Text("OK"),
             ),
+            TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/letterquestleaderboard'); //Navigate to Leaderboard
+            },
+            child: const Text('View Leaderboard'),
+          ),
           ],
         ),
       );
