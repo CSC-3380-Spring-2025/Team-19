@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:team_19/db/databasehelper.dart';
+import 'package:team_19/models/user_model.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -33,12 +35,27 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                final navigator = Navigator.of(context);
+                String enteredName = nameController.text.trim();
+                User? existingUser = await DatabaseHelper.fetchUserByName(enteredName);
+                if (existingUser == null) {
+                  User newUser = User(
+                    name: enteredName,
+                    connectionsScores: {},
+                    connectionsTimes: {},
+                    letterquestScores: {},
+                    letterquestTimes: {},
+                    wordladderScores: {},
+                    wordladderTimes: {},
+                  );
+                  await DatabaseHelper.addUser(newUser);
+                }
                 setState(() {
-                  userName = nameController.text.trim();
+                  userName = enteredName;
                 });
-                Navigator.of(context).pop();
-              },
+                navigator.pop();
+                },
               child: Text('OK'),
             ),
           ],
