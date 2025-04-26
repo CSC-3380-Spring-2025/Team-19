@@ -31,15 +31,14 @@ class User {
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'connectionsScores': jsonEncode(connectionsScores),
-        'connectionsTimes': jsonEncode(connectionsTimes),
-        'letterquestScores': jsonEncode(letterquestScores),
-        'letterquestTimes': jsonEncode(letterquestTimes),
-        'wordladderScores': jsonEncode(wordladderScores),
-        'wordladderTimes': jsonEncode(wordladderTimes),
+        'connectionsScores': _encodeMap(connectionsScores),
+        'connectionsTimes': _encodeMap(connectionsTimes),
+        'letterquestScores': _encodeMap(letterquestScores),
+        'letterquestTimes': _encodeMap(letterquestTimes),
+        'wordladderScores': _encodeMap(wordladderScores),
+        'wordladderTimes': _encodeMap(wordladderTimes),
       };
 
-  // Helper method for decoding Map<String, dynamic> -> Map<int, int>
   static Map<int, int> _decodeMap(dynamic input) {
     if (input is String) {
       final decoded = jsonDecode(input) as Map<String, dynamic>;
@@ -49,5 +48,9 @@ class User {
     } else {
       throw FormatException('Invalid format for Map<int, int>');
     }
+  }
+
+  static String _encodeMap(Map<int, int> map) {
+    return jsonEncode(map.map((key, value) => MapEntry(key.toString(), value)));
   }
 }

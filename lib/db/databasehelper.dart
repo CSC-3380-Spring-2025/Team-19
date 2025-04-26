@@ -15,62 +15,70 @@ class DatabaseHelper {
   static Future<Database> _getDB() async {
     return openDatabase(
       join(await getDatabasesPath(), _dbName),
+      version: _version,
       onCreate: (db, version) async {
+        // Create Connections table
         await db.execute("""
           CREATE TABLE Connections(
-            id INTEGER PRIMARY KEY NOT NULL, 
+            id INTEGER PRIMARY KEY NOT NULL,
             categories TEXT NOT NULL
           );
         """);
 
-        await DatabaseHelper.addConnection(connection1);
-        await DatabaseHelper.addConnection(connection2);
-        await DatabaseHelper.addConnection(connection3);
-        await DatabaseHelper.addConnection(connection4);
-        await DatabaseHelper.addConnection(connection5);
+        // Insert seed Connections data
+        await db.insert("Connections", connection1.toJson());
+        await db.insert("Connections", connection2.toJson());
+        await db.insert("Connections", connection3.toJson());
+        await db.insert("Connections", connection4.toJson());
+        await db.insert("Connections", connection5.toJson());
 
-
+        // Create Letterquest table
         await db.execute("""
           CREATE TABLE Letterquest(
-            id INTEGER PRIMARY KEY NOT NULL, 
-            phrase TEXT NOT NULL, 
+            id INTEGER PRIMARY KEY NOT NULL,
+            phrase TEXT NOT NULL,
             hint TEXT NOT NULL
           );
         """);
-        
-        await DatabaseHelper.addLetterquest(letterquest1);
-        await DatabaseHelper.addLetterquest(letterquest2);
-        await DatabaseHelper.addLetterquest(letterquest3);
-        await DatabaseHelper.addLetterquest(letterquest4);
-        await DatabaseHelper.addLetterquest(letterquest5);
 
+        // Insert seed Letterquest data
+        await db.insert("Letterquest", letterquest1.toJson());
+        await db.insert("Letterquest", letterquest2.toJson());
+        await db.insert("Letterquest", letterquest3.toJson());
+        await db.insert("Letterquest", letterquest4.toJson());
+        await db.insert("Letterquest", letterquest5.toJson());
+
+        // Create Wordladder table
         await db.execute("""
           CREATE TABLE Wordladder(
-            id INTEGER PRIMARY KEY NOT NULL, 
+            id INTEGER PRIMARY KEY NOT NULL,
             wordList TEXT NOT NULL
           );
         """);
 
-        await DatabaseHelper.addWordladder(wordLadder1);
-        await DatabaseHelper.addWordladder(wordLadder2);
-        await DatabaseHelper.addWordladder(wordLadder3);
-        await DatabaseHelper.addWordladder(wordLadder4);
-        await DatabaseHelper.addWordladder(wordLadder5);
+        // Insert seed Wordladder data
+        await db.insert("Wordladder", wordLadder1.toJson());
+        await db.insert("Wordladder", wordLadder2.toJson());
+        await db.insert("Wordladder", wordLadder3.toJson());
+        await db.insert("Wordladder", wordLadder4.toJson());
+        await db.insert("Wordladder", wordLadder5.toJson());
 
+        // Create Users table
         await db.execute("""
           CREATE TABLE Users(
-            name TEXT PRIMARY KEY NOT NULL, 
-            connectionsScores TEXT NOT NULL, 
-            connectionsTimes TEXT NOT NULL, 
-            letterquestScores TEXT NOT NULL, 
-            letterquestTimes TEXT NOT NULL, 
-            wordladderScores TEXT NOT NULL, 
+            name TEXT PRIMARY KEY NOT NULL,
+            connectionsScores TEXT NOT NULL,
+            connectionsTimes TEXT NOT NULL,
+            letterquestScores TEXT NOT NULL,
+            letterquestTimes TEXT NOT NULL,
+            wordladderScores TEXT NOT NULL,
             wordladderTimes TEXT NOT NULL
           );
         """);
-        await DatabaseHelper.seedTestUsersIfEmpty();
+
+        await seedTestUsersIfEmpty(db);
+
       },
-      version: _version,
     );
   }
 
@@ -186,8 +194,7 @@ class DatabaseHelper {
     return data.isNotEmpty ? User.fromJson(data.first) : null;
   }
 
-  static Future<void> seedTestUsersIfEmpty() async {
-    final db = await _getDB();
+  static Future<void> seedTestUsersIfEmpty(Database db) async {
     final List<Map<String, dynamic>> users = await db.query("Users");
 
       if (users.isEmpty) {
@@ -258,7 +265,7 @@ class DatabaseHelper {
       ];
 
       for (final user in testUsers) {
-        await addUser(user);
+        await db.insert('Users', user.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
       }
     }
   }
