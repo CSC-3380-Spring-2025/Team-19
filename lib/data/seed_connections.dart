@@ -1,5 +1,4 @@
 import 'package:team_19/models/connections_model.dart'; 
-import '/db/databasehelper.dart';
 
 final connection1 = Connnection(
   id: 1,

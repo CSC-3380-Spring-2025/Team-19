@@ -68,6 +68,7 @@ class DatabaseHelper {
             wordladderTimes TEXT NOT NULL
           );
         """);
+        await DatabaseHelper.seedTestUsersIfEmpty();
       },
       version: _version,
     );
@@ -184,4 +185,82 @@ class DatabaseHelper {
     final data = await db.query("Users", where: 'name = ?', whereArgs: [name]);
     return data.isNotEmpty ? User.fromJson(data.first) : null;
   }
+
+  static Future<void> seedTestUsersIfEmpty() async {
+    final db = await _getDB();
+    final List<Map<String, dynamic>> users = await db.query("Users");
+
+      if (users.isEmpty) {
+        List<User> testUsers = [
+          User(
+            name: "Jonnathan M.",
+            connectionsScores: {1: 80},
+            connectionsTimes: {1: 90},
+            letterquestScores: {1: 100},
+            letterquestTimes: {1: 90},
+            wordladderScores: {1: 100},
+            wordladderTimes: {1: 90},
+          ),
+          User(
+            name: "Jonnathan B.",
+            connectionsScores: {1: 80},
+            connectionsTimes: {1: 120},
+            letterquestScores: {1: 80},
+            letterquestTimes: {1: 120},
+            wordladderScores: {1: 80},
+            wordladderTimes: {1: 120},
+          ),
+          User(
+            name: "Beau",
+            connectionsScores: {1: 75},
+            connectionsTimes: {1: 123},
+            letterquestScores: {1: 75},
+            letterquestTimes: {1: 123},
+            wordladderScores: {1: 75},
+            wordladderTimes: {1: 123},
+          ),
+          User(
+            name: "Bryce",
+            connectionsScores: {1: 1},
+            connectionsTimes: {1: 999},
+            letterquestScores: {1: 1},
+            letterquestTimes: {1: 999},
+            wordladderScores: {1: 1},
+            wordladderTimes: {1: 999},
+          ),
+          User(
+            name: "Skylur",
+            connectionsScores: {1: 50},
+            connectionsTimes: {1: 110},
+            letterquestScores: {1: 50},
+            letterquestTimes: {1: 110},
+            wordladderScores: {1: 50},
+            wordladderTimes: {1: 110},
+          ),
+          User(
+            name: "Alex",
+            connectionsScores: {1: 80},
+            connectionsTimes: {1: 100},
+            letterquestScores: {1: 80},
+            letterquestTimes: {1: 100},
+            wordladderScores: {1: 80},
+            wordladderTimes: {1: 100},
+          ),
+          User(
+            name: "Steve",
+            connectionsScores: {1: 80},
+            connectionsTimes: {1: 95},
+            letterquestScores: {1: 80},
+            letterquestTimes: {1: 95},
+            wordladderScores: {1: 80},
+            wordladderTimes: {1: 95},
+          ),
+      ];
+
+      for (final user in testUsers) {
+        await addUser(user);
+      }
+    }
+  }
 }
+

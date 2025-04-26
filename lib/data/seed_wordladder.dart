@@ -1,5 +1,4 @@
 import 'package:team_19/models/wordladder_model.dart'; 
-import '/db/databasehelper.dart';
 
 final wordLadder1 = Wordladder(id: 1, wordList: ['basket', 'ball', 'game', 'show', 'case']);
 final wordLadder2 = Wordladder(id: 2, wordList: ['fire', 'smoke', 'alarm', 'clock', 'time']);
