@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'keyboard_ui.dart';
+import 'package:team_19/db/databasehelper.dart';
+import 'package:team_19/models/letterquest_model.dart';
 
 class LetterQuestGame extends StatefulWidget {
   final String userName;
@@ -11,8 +13,8 @@ class LetterQuestGame extends StatefulWidget {
 
 class _LetterQuestGameState extends State<LetterQuestGame> {
   final TextEditingController _phraseController = TextEditingController();
-  final String phrase = "THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
-  final String hint = "PANGRAM";
+  String phrase = "";
+  String hint = "";
   Set<String> guessedLetters = {};
   bool isSolvingPhrase = false;
   String fullPhraseAttempt = "";
@@ -22,9 +24,12 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
   late Timer _timer;
   int secondsElapsed = 0;
 
+  int _currentLevelId = 1;
+
   @override
   void initState() {
     super.initState();
+    _loadLevel();
     _startTimer();
   }
 
@@ -33,6 +38,46 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
     _timer.cancel();
     _phraseController.dispose(); 
     super.dispose();
+  }
+
+  Future<void> _loadLevel() async {
+    try {
+    final Letterquest? level = await DatabaseHelper.fetchLetterquestById(_currentLevelId);
+
+    if (level != null) {
+      setState(() {
+        phrase = level.phrase.toUpperCase(); // Force uppercase
+        hint = level.hint;
+        _currentLevelId++; // Move to next level for next time
+      });
+    } else {
+      setState(() {
+        phrase = '';
+        hint = 'No more puzzles available.';
+      });
+    }
+  } catch (e) {
+    setState(() {
+      phrase = '';
+      hint = 'Error loading puzzle.';
+    });
+    print('Error loading Letterquest level: $e');
+  }
+  }
+
+  Future<void> _loadNextLevel() async {
+    setState(() {
+      isGameOver = false; 
+      phrase = "";
+      hint = "";
+      guessedLetters = {};
+      isSolvingPhrase = false;
+      fullPhraseAttempt = "";
+      incorrectAttempts = 0;
+      secondsElapsed = 0; 
+      _startTimer();     
+    });
+    await _loadLevel();        
   }
 
   void _startTimer() {
@@ -100,7 +145,9 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
           )
         ],
       ),
-      body: Column(
+      body: phrase.isEmpty
+      ? Center(child: CircularProgressIndicator())
+      : Column(
         children: [
           const SizedBox(height: 10),
           Image.asset(
@@ -123,6 +170,11 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
               onEnter: () {},
               onDelete: () {},
             ),
+          if (isGameOver)
+            ElevatedButton(
+              onPressed: _loadNextLevel,
+              child: Text('Next Level'),
+            )
         ],
       ),
     );
@@ -237,7 +289,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         barrierDismissible: false,
         builder: (context) => AlertDialog(
           title: Text("🎉 You got it!"),
-          content: Text("Congratulations! You solved it."),
+          content: Text("Congratulations! You solved it in $secondsElapsed seconds."),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
