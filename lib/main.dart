@@ -4,10 +4,6 @@ import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:team_19/home_page.dart';
 import 'package:team_19/leaderboard_selector.dart';
-import 'game_selector.dart'; 
-import 'connections.dart';
-import 'letterquest.dart';
-import 'wordladder_frontend.dart';
 import 'letterquest_leaderboard_page.dart';
 import 'wordladder_leaderboard_page.dart';
 import 'connections_leaderboard_page.dart';
@@ -33,11 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       home: HomePage(), //Eventually, this needs to be changed to the home page 
       routes: {
-        '/gameselection': (context) => GameSelectionScreen(), 
         '/leaderboardselection': (context) => LeaderboardSelectionScreen(),
-        '/connections': (context) => ConnectionsGameScreen(),
-        '/letterquest': (context) => LetterQuestGame(),
-        '/wordladder': (context) => WordLadderGame(),
         '/letterquestleaderboard': (context) => LetterQuestLeaderboard(),
         '/wordladderleaderboard' : (context) => WordLadderLeaderboard(), 
         '/connectionsleaderboard' : (context) => ConnectionsLeaderboard(), 

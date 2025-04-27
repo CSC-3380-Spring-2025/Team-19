@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class WordLadderGame extends StatefulWidget {
+  final String userName;
+  const WordLadderGame({super.key, required this.userName});
   @override
   _WordLadderGameApp createState() => _WordLadderGameApp();
 }
