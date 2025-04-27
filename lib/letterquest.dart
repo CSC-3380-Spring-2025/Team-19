@@ -3,6 +3,8 @@ import 'dart:async';
 import 'keyboard_ui.dart';
 
 class LetterQuestGame extends StatefulWidget {
+  final String userName;
+  const LetterQuestGame({super.key, required this.userName});
   @override
   _LetterQuestGameState createState() => _LetterQuestGameState();
 }

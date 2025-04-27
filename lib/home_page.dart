@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:team_19/db/databasehelper.dart';
+import 'package:team_19/game_selector.dart';
 import 'package:team_19/models/user_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -90,7 +91,9 @@ class _HomePageState extends State<HomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                 Navigator.pushNamed(context, '/gameselection');
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => GameSelectionScreen(userName: userName!),
+              ),
+            );
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),

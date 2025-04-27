@@ -2,13 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 
-void main() {
-  runApp(const ConnectionsGameScreen());
-}
-
-
 class ConnectionsGameScreen extends StatefulWidget {
-  const ConnectionsGameScreen({super.key});
+  final String userName;
+  const ConnectionsGameScreen({super.key, required this.userName});
 
   @override
   _ConnectionsGameScreenState createState() => _ConnectionsGameScreenState();

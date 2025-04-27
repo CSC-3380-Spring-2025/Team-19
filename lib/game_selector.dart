@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:team_19/connections.dart';
+import 'package:team_19/letterquest.dart';
+import 'package:team_19/wordladder_frontend.dart';
 
 class GameSelectionScreen extends StatelessWidget {
+  final String userName;
+  GameSelectionScreen({required this.userName});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,21 +52,21 @@ class GameSelectionScreen extends StatelessWidget {
                     context,
                     'Connections',
                     'assets/images/connections_logo.png',
-                    () => Navigator.pushNamed(context, '/connections'),
+                    () => Navigator.push(context, MaterialPageRoute(builder: (context) => ConnectionsGameScreen(userName: userName))),
                   ),
                   const SizedBox(width: 16),
                   _buildGameTile(
                     context,
                     'LetterQuest',
                     'assets/images/letterquest_logo.png',
-                    () => Navigator.pushNamed(context, '/letterquest'),
+                    () => Navigator.push(context, MaterialPageRoute(builder: (context) => LetterQuestGame(userName: userName))),
                   ),
                   const SizedBox(width: 16),
                   _buildGameTile(
                     context,
                     'Word Ladder',
                     'assets/images/wordladder_logo.png',
-                    () => Navigator.pushNamed(context, '/wordladder'),
+                    () => Navigator.push(context, MaterialPageRoute(builder: (context) => WordLadderGame(userName: userName))),
                   ),
                 ],
               ),
