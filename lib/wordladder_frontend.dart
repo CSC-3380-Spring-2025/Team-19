@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:team_19/db/databasehelper.dart';
+import 'package:team_19/models/user_model.dart';
 import 'package:team_19/models/wordladder_model.dart';
 
 class WordLadderGame extends StatefulWidget {
@@ -111,33 +112,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
         });
 
         if (currentIndex >= wordList.length - 1) {
-          _timer.cancel();
-          setState(() {
-            isGameOver = true;
-          });
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text("Congratulations!"),
-              content: Text("You completed the Word Ladder!\n\nScore: $score\nTime: ${secondsElapsed}s"),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    //resetGame();
-                  },
-                  child: Text("OK"),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.pushNamed(context, '/wordladderleaderboard'); //Navigate to leaderboard
-                  },
-                  child: const Text('View Leaderboard'),
-                ),
-              ],
-            ),
-          );
+          _showWinPopup();
         }
       } else {
         setState(() {
@@ -159,11 +134,21 @@ class _WordLadderGameApp extends State<WordLadderGame> {
     });
   }
 
+  final TextStyle appBarTitleStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 22,
+      fontWeight: FontWeight.bold,
+    );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.deepPurple[50],
       appBar: AppBar(
-        title: Text("Word Ladder Game"),
+        backgroundColor: Colors.deepPurple,
+        iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: appBarTitleStyle,
+        title: Text("Word Ladder"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -176,7 +161,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             child: Center(
               child: Text(
                 "⏱️ $secondsElapsed s",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: appBarTitleStyle,
               ),
             ),
           ),
@@ -252,6 +237,90 @@ class _WordLadderGameApp extends State<WordLadderGame> {
               )
           ],
         ),
+      ),
+    );
+  }
+
+  void _showWinPopup() async
+  {
+    _timer.cancel();
+    setState(() {
+      isGameOver = true;
+    });
+
+
+    User? winner = await DatabaseHelper.fetchUserByName(widget.userName);
+
+    if (winner != null) {
+      int actualID = _currentLevelId - 1;
+
+      bool savedNew = false;
+
+      Map<int, int> winnerScores = winner.wordladderScores;
+      
+      if(winnerScores[actualID] != null)
+      {
+        if(winnerScores[actualID]! < score)
+        {
+          winnerScores[actualID] = score;
+          winner.wordladderScores = winnerScores;
+
+          savedNew = true;
+        }
+      }
+      else
+      {
+        winnerScores[actualID] = score;
+        winner.wordladderScores = winnerScores;
+
+        savedNew = true;
+      }
+
+      if(savedNew)
+      {
+        Map<int, int> winnerTimes = winner.wordladderTimes;
+        
+        if(winnerTimes[actualID] != null)
+        {
+          if(winnerTimes[actualID]! > secondsElapsed)
+          {
+            winnerTimes[actualID] = secondsElapsed;
+            winner.wordladderTimes = winnerTimes;
+          }
+        }
+        else
+        {
+          winnerTimes[actualID] = secondsElapsed;
+          winner.wordladderTimes = winnerTimes;
+        }
+      }
+
+
+      await DatabaseHelper.updateUser(winner);
+    }
+
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Congratulations!"),
+        content: Text("You completed the Word Ladder!\n\nScore: $score\nTime: ${secondsElapsed}s"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              //resetGame();
+            },
+            child: Text("OK"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/wordladderleaderboard'); //Navigate to leaderboard
+            },
+            child: const Text('View Leaderboard'),
+          ),
+        ],
       ),
     );
   }
