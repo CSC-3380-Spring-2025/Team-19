@@ -2,14 +2,14 @@ import 'dart:convert';
 
 class User {
   final String name;
-  final Map<int, int> connectionsScores;
-  final Map<int, int> connectionsTimes;
-  final Map<int, int> letterquestScores;
-  final Map<int, int> letterquestTimes;
-  final Map<int, int> wordladderScores;
-  final Map<int, int> wordladderTimes;
+  Map<int, int> connectionsScores;
+  Map<int, int> connectionsTimes;
+  Map<int, int> letterquestScores;
+  Map<int, int> letterquestTimes;
+  Map<int, int> wordladderScores;
+  Map<int, int> wordladderTimes;
 
-  const User({
+  User({
     required this.name,
     required this.connectionsScores,
     required this.connectionsTimes,
