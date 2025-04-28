@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:team_19/models/user_model.dart';
 import 'dart:async';
 import 'keyboard_ui.dart';
 import 'package:team_19/db/databasehelper.dart';
@@ -20,11 +21,15 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
   String fullPhraseAttempt = "";
   int incorrectAttempts = 0;
   bool isGameOver = false;
+  bool showSubmitButton = true;
+
 
   late Timer _timer;
   int secondsElapsed = 0;
 
   int _currentLevelId = 1;
+
+  late ElevatedButton submitButton;
 
   @override
   void initState() {
@@ -75,6 +80,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
       fullPhraseAttempt = "";
       incorrectAttempts = 0;
       secondsElapsed = 0; 
+      showSubmitButton = true;
       _startTimer();     
     });
     await _loadLevel();        
@@ -222,6 +228,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         children: [
           TextField(
             controller: _phraseController,
+            autofocus: true,
             onChanged: (value) => fullPhraseAttempt = value.toUpperCase(),
             onSubmitted: (_) => _submitPhraseGuess(), // Handle Enter key
             decoration: InputDecoration(
@@ -230,47 +237,27 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
             ),
           ),
           SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              bool isCorrect = fullPhraseAttempt == phrase;
-              if (isCorrect) {
-                _timer.cancel();
-                setState(() {
-                  isGameOver = true;
-                });
-                showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    title: Text("🎉 You got it!"),
-                    content: Text("Congratulations! You solved it in $secondsElapsed seconds."),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("OK"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          Navigator.pushNamed(context, '/letterquestleaderboard'); //Navigate to Leaderboard
-                        },
-                        child: const Text('View Leaderboard'),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                setState(() {
-                  incorrectAttempts++;
-                  isSolvingPhrase = false;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Incorrect guess. Try again!")),
-                );
-              }
-            },
-            // onPressed: _submitPhraseGuess,
-            child: Text("Submit Guess"),
-          ),
+          if (showSubmitButton)
+            submitButton = ElevatedButton(
+              onPressed: () {
+                bool isCorrect = fullPhraseAttempt == phrase;
+                if (isCorrect) {
+                  _showWinPopup();
+                } else {
+                  setState(() {
+                    incorrectAttempts++;
+                    isSolvingPhrase = false;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Incorrect guess. Try again!")),
+                  );
+                }
+              },
+              child: Text("Submit Guess"),
+            )
+          else
+            SizedBox.shrink()
+
         ],
       ),
     );
@@ -280,31 +267,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
     fullPhraseAttempt = _phraseController.text.toUpperCase(); // <-- Added
     bool isCorrect = fullPhraseAttempt == phrase;
     if (isCorrect) {
-      _timer.cancel();
-      setState(() {
-        isGameOver = true;
-      });
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Text("🎉 You got it!"),
-          content: Text("Congratulations! You solved it in $secondsElapsed seconds."),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text("OK"),
-            ),
-            TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              Navigator.pushNamed(context, '/letterquestleaderboard'); //Navigate to Leaderboard
-            },
-            child: const Text('View Leaderboard'),
-          ),
-          ],
-        ),
-      );
+      _showWinPopup();
     } else {
       setState(() {
         incorrectAttempts++;
@@ -323,5 +286,61 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         incorrectAttempts++;
       }
     });
+  }
+
+  void _showWinPopup() async
+  {
+    _timer.cancel();
+    setState(() {
+      isGameOver = true;
+      showSubmitButton = false;
+    });
+
+
+    User? winner = await DatabaseHelper.fetchUserByName(widget.userName);
+
+    if (winner != null) {
+      int actualID = _currentLevelId - 1;
+
+      Map<int, int> winnerTimes = winner.letterquestTimes;
+      
+      if(winnerTimes[actualID] != null)
+      {
+        if(winnerTimes[actualID]! > secondsElapsed)
+        {
+          winnerTimes[actualID] = secondsElapsed;
+          winner.letterquestTimes = winnerTimes;
+        }
+      }
+      
+
+      Map<int, int> winnerScores = winner.letterquestScores;
+      winnerScores[actualID] = 0;
+      winner.letterquestScores = winnerScores;
+
+      await DatabaseHelper.updateUser(winner);
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: Text("🎉 You got it!"),
+        content: Text("Congratulations! You solved it in $secondsElapsed seconds."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/letterquestleaderboard'); //Navigate to Leaderboard
+            },
+            child: const Text('View Leaderboard'),
+          ),
+        ],
+      ),
+    );
   }
 }
