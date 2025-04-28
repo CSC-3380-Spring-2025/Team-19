@@ -63,6 +63,7 @@ class _LetterQuestLeaderboardPageState extends State<LetterQuestLeaderboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.deepPurple[50],
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         iconTheme: IconThemeData(color: Colors.white),
