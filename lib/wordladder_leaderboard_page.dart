@@ -46,18 +46,6 @@ class _WordLadderLeaderboardPageState extends State<WordLadderLeaderboard> {
       }
     }
 
-/*
-    List<LeaderboardEntry> entries = [//Used for testing the page without database entries. Placements were decided randomly using wheelofnames.com 
-    LeaderboardEntry(username: "Jonnathan M.", score: 100, timeTaken: 90),
-    LeaderboardEntry(username: "Jonnathan B.", score: 80, timeTaken: 120),
-    LeaderboardEntry(username: "Beau", score: 75, timeTaken: 123),
-    LeaderboardEntry(username: "Bryce", score: 1, timeTaken: 999),
-    LeaderboardEntry(username: "Skylur", score: 50, timeTaken: 110),
-    LeaderboardEntry(username: "Tie Breaker A", score: 80, timeTaken: 100),
-    LeaderboardEntry(username: "Tie Breaker B", score: 80, timeTaken: 95),
-    ];
-*/
-
     // Sort by score descending, then by time ascending
     entries.sort((a, b) {
       if (b.score != a.score) {
