@@ -53,6 +53,13 @@ class _LetterQuestLeaderboardPageState extends State<LetterQuestLeaderboard> {
     return entries;
   }
 
+  Color getEntryColor(int index) {
+    if (index == 0) return Colors.deepPurple[200]!;
+    if (index == 1) return Colors.deepPurple[100]!;
+    if (index == 2) return Colors.deepPurple[50]!;
+    return Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,40 +69,65 @@ class _LetterQuestLeaderboardPageState extends State<LetterQuestLeaderboard> {
         titleTextStyle: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
         title: Text("LetterQuest Daily Leaderboard"),
       ),
-      body: FutureBuilder<List<LeaderboardEntry>>(
-        future: leaderboardData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error loading leaderboard", style: TextStyle(fontSize: 20)));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("No data available", style: TextStyle(fontSize: 20)));
-          }
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.7,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: FutureBuilder<List<LeaderboardEntry>>(
+            future: leaderboardData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text("Error loading leaderboard", style: TextStyle(fontSize: 20)));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text("No data available", style: TextStyle(fontSize: 20)));
+              }
 
-          List<LeaderboardEntry> leaderboard = snapshot.data!;
-          return ListView.builder(
-            itemCount: leaderboard.length,
-            itemBuilder: (context, index) {
-              LeaderboardEntry entry = leaderboard[index];
-              return ListTile(
-                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                leading: CircleAvatar(
-                  radius: 25,
-                  child: Text("${index + 1}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ),
-                title: Text(
-                  entry.username,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                trailing: Text(
-                  "${entry.timeTaken}s",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+              List<LeaderboardEntry> leaderboard = snapshot.data!;
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: ListView.separated(
+                  itemCount: leaderboard.length,
+                  separatorBuilder: (context, index) => Divider(color: Colors.grey[300], thickness: 1, height: 1),
+                  itemBuilder: (context, index) {
+                    LeaderboardEntry entry = leaderboard[index];
+                    return Container(
+                      width: double.infinity,
+                      color: getEntryColor(index),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        leading: CircleAvatar(
+                          radius: 25,
+                          child: Text("${index + 1}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                        title: Text(
+                          entry.username,
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                        ),
+                        trailing: Text(
+                          "Time: ${entry.timeTaken}s",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               );
             },
-          );
-        },
+          ),
+        ),
       ),
     );
   }
