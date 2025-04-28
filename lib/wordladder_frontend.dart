@@ -254,37 +254,45 @@ class _WordLadderGameApp extends State<WordLadderGame> {
     if (winner != null) {
       int actualID = _currentLevelId - 1;
 
-      Map<int, int> winnerTimes = winner.wordladderTimes;
-      
-      if(winnerTimes[actualID] != null)
-      {
-        if(winnerTimes[actualID]! > secondsElapsed)
-        {
-          winnerTimes[actualID] = secondsElapsed;
-          winner.wordladderTimes = winnerTimes;
-        }
-      }
-      else
-      {
-        winnerTimes[actualID] = secondsElapsed;
-        winner.wordladderTimes = winnerTimes;
-      }
-      
+      bool savedNew = false;
 
       Map<int, int> winnerScores = winner.wordladderScores;
       
       if(winnerScores[actualID] != null)
       {
-        if(winnerScores[actualID]! > score)
+        if(winnerScores[actualID]! < score)
         {
           winnerScores[actualID] = score;
           winner.wordladderScores = winnerScores;
+
+          savedNew = true;
         }
       }
       else
       {
         winnerScores[actualID] = score;
         winner.wordladderScores = winnerScores;
+
+        savedNew = true;
+      }
+
+      if(savedNew)
+      {
+        Map<int, int> winnerTimes = winner.wordladderTimes;
+        
+        if(winnerTimes[actualID] != null)
+        {
+          if(winnerTimes[actualID]! > secondsElapsed)
+          {
+            winnerTimes[actualID] = secondsElapsed;
+            winner.wordladderTimes = winnerTimes;
+          }
+        }
+        else
+        {
+          winnerTimes[actualID] = secondsElapsed;
+          winner.wordladderTimes = winnerTimes;
+        }
       }
 
 
