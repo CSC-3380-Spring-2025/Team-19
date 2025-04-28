@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:team_19/db/databasehelper.dart';
+import 'package:team_19/models/wordladder_model.dart';
 
 class WordLadderGame extends StatefulWidget {
   final String userName;
@@ -9,21 +11,26 @@ class WordLadderGame extends StatefulWidget {
 }
 
 class _WordLadderGameApp extends State<WordLadderGame> {
-  final List<String> wordList = ['BASKET', 'BALL', 'GAME', 'SHOW', 'CASE'];
+  //final List<String> wordList = ['BASKET', 'BALL', 'GAME', 'SHOW', 'CASE'];
+  List<String> wordList = [""];
   late List<String> currentWordLadder;
   int score = 10000;
   int incorrectGuesses = 0;
   int currentIndex = 1;
   TextEditingController wordController = TextEditingController();
+  bool isGameOver = false;
 
   // Timer-related
   late Timer _timer;
   int secondsElapsed = 0;
 
+  int _currentLevelId = 1;
+
   @override
   void initState() {
     super.initState();
     currentWordLadder = hideWords(wordList);
+    _loadLevel();
     _startTimer();
   }
 
@@ -31,6 +38,43 @@ class _WordLadderGameApp extends State<WordLadderGame> {
   void dispose() {
     _timer.cancel();
     super.dispose();
+  }
+
+  Future<void> _loadLevel() async {
+    try {
+    final Wordladder? level = await DatabaseHelper.fetchWordladderById(_currentLevelId);
+
+    if (level != null) {
+      setState(() {
+        wordList = level.wordList; 
+        currentWordLadder = hideWords(wordList); 
+        _currentLevelId++; // Move to next level for next time
+      });
+    } else {
+      setState(() {
+        wordList = [""];
+        currentWordLadder = [""];
+      });
+    }
+  } catch (e) {
+    setState(() {
+      wordList = [""];
+      currentWordLadder = [""];
+    });
+    print('Error loading Wordladder level: $e');
+  }
+  }
+
+  Future<void> _loadNextLevel() async {
+    setState(() {
+      isGameOver = false; 
+      score = 10000;
+      incorrectGuesses = 0;
+      currentIndex = 1;
+      secondsElapsed = 0; 
+    });
+    await _loadLevel(); 
+    _startTimer();       
   }
 
   void _startTimer() {
@@ -68,6 +112,9 @@ class _WordLadderGameApp extends State<WordLadderGame> {
 
         if (currentIndex >= wordList.length - 1) {
           _timer.cancel();
+          setState(() {
+            isGameOver = true;
+          });
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -77,9 +124,9 @@ class _WordLadderGameApp extends State<WordLadderGame> {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    resetGame();
+                    //resetGame();
                   },
-                  child: Text("Play Again"),
+                  child: Text("OK"),
                 ),
                 TextButton(
                   onPressed: () {
@@ -165,7 +212,9 @@ class _WordLadderGameApp extends State<WordLadderGame> {
           ),
         ],
       ),
-      body: Padding(
+      body: wordList.isEmpty
+      ? Center(child: CircularProgressIndicator())
+      : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -196,6 +245,11 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             SizedBox(height: 20),
             Text("Incorrect Guesses: $incorrectGuesses"),
             Text("Score: $score"),
+            if (isGameOver)
+              ElevatedButton(
+                onPressed: _loadNextLevel,
+                child: Text('Next Level'),
+              )
           ],
         ),
       ),
