@@ -149,9 +149,9 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
       case "Colors":
         return Colors.redAccent;
       case "Fruits":
-        return Colors.green;
+        return const Color.fromARGB(255, 85, 225, 90);
       case "Animals":
-        return Colors.brown;
+        return const Color.fromARGB(255, 149, 16, 144);
       case "Instruments":
         return Colors.blueAccent;
       default:
@@ -200,7 +200,8 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Connections"),
+        title: const Text("Scattergories"),
+        backgroundColor: Colors.deepPurple,
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),

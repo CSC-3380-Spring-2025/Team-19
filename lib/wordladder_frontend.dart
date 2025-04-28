@@ -9,7 +9,7 @@ class WordLadderGame extends StatefulWidget {
 }
 
 class _WordLadderGameApp extends State<WordLadderGame> {
-  final List<String> wordList = ['BASKET', 'BALL', 'GAME', 'SHOW', 'CASE'];
+  final List<String> wordList = ['JULIUS', 'CEASER', 'SALAD', 'TOSS', 'BACK', 'DOWN'];
   late List<String> currentWordLadder;
   int score = 10000;
   int incorrectGuesses = 0;

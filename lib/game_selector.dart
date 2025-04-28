@@ -50,7 +50,7 @@ class GameSelectionScreen extends StatelessWidget {
                 children: [
                   _buildGameTile(
                     context,
-                    'Connections',
+                    'Scattergories',
                     'assets/images/connections_logo.png',
                     () => Navigator.push(context, MaterialPageRoute(builder: (context) => ConnectionsGameScreen(userName: userName))),
                   ),
