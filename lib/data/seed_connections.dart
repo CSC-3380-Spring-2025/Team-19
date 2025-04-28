@@ -13,10 +13,10 @@ final connection1 = Connnection(
 final connection2 = Connnection(
   id: 2,
   categories: {
-    'Jobs': ['Doctor', 'Teacher', 'Engineer', 'Chef'],
-    'Vehicles': ['Car', 'Bike', 'Plane', 'Boat'],
-    'Desserts': ['Cake', 'Pie', 'Brownie', 'Ice Cream'],
-    'Instruments': ['Guitar', 'Piano', 'Violin', 'Drums'],
+    'Numbers With First Letter Replaced by S': ['Sen', 'Sight', 'Sine', 'Sour'],
+    'Words Ending with Numbers': ['Often', 'Ozone', 'Freight', 'Canine'],
+    'Shapes of Capital Greek Letters': ['Circle', 'Horseshoe', 'Pitchfork', 'Triangle'],
+    'Car Companies Minus One Letter': ['Aura', 'Buck', 'Doge', 'Hoda'],
   },
 );
 
