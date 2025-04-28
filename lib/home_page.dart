@@ -39,6 +39,9 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 final navigator = Navigator.of(context);
                 String enteredName = nameController.text.trim();
+                if (enteredName.isEmpty) {
+                  return;
+                }
                 User? existingUser = await DatabaseHelper.fetchUserByName(enteredName);
                 if (existingUser == null) {
                   User newUser = User(
