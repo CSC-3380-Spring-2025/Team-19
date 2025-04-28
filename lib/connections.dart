@@ -64,6 +64,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
       foundCategories = {};
       attemptsLeft = 4;
       elapsedSeconds = 0;
+      solvedWords = {};
       _startTimer();
     });
     await _loadLevel();
@@ -109,6 +110,13 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('OK'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.pushNamed(context, '/connectionsleaderboard');
+            },
+            child: const Text('View Leaderboard'),
+          )
         ],
       ),
     );
@@ -139,10 +147,6 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           foundCategories.add(foundCategoryName);
           solvedWords[foundCategoryName] = selectedWords.toList();
           words.removeWhere((word) => selectedWords.contains(word));
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Category Found: $foundCategoryName")),
-          );
         } else {
           if (oneAway) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -268,7 +272,13 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
                 builder: (context) => AlertDialog(
                   title: const Text('How to Play Connections'),
                   content: const Text(
-                    "You will be given 16 words.\n\nFind 4 groups of 4 related words.\n\nYou have 4 total incorrect attempts.\n\nSelect 4 words and submit!",
+                    "Welcome to Scattergories!\n\n"
+                    "You will be given a set of 16 words.\n\n"
+                    "Your goal is to find four groups of four words that share a common theme.\n\n"
+                    "Select four words that you think belong together and submit your guess.\n\n"
+                    "If correct, the words will be grouped together. If incorrect, you will receive a 'one away' hint if only one word is incorrect.\n\n"
+                    "You have a total of four incorrect attempts before the game ends.\n\n"
+                    "Think critically about the relationships between words and find all the correct groups!",
                   ),
                   actions: [
                     TextButton(
