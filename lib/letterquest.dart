@@ -312,6 +312,11 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
           winner.letterquestTimes = winnerTimes;
         }
       }
+      else
+      {
+        winnerTimes[actualID] = secondsElapsed;
+        winner.letterquestTimes = winnerTimes;
+      }
       
 
       Map<int, int> winnerScores = winner.letterquestScores;
