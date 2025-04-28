@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+// THIS IS NOT USED IN WORDLADDER, ONLY IN LETTERQUEST
 class WordLadderKeyboard extends StatelessWidget {
   final Set<String> guessedLetters;
   final String phrase;
