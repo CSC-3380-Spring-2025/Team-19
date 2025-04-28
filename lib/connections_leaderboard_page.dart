@@ -12,7 +12,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Connections Leaderboard",
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+        scaffoldBackgroundColor: Colors.deepPurple[50],
+      ),
       home: ConnectionsLeaderboard(),
     );
   }
@@ -29,34 +32,21 @@ class _ConnectionsLeaderboardPageState extends State<ConnectionsLeaderboard> {
   @override
   void initState() {
     super.initState();
-    leaderboardData = fetchLeaderboard(); // Fetch data when the page loads to keep it up to date when users open the page. 
+    leaderboardData = fetchLeaderboard();
   }
- 
+
   Future<List<LeaderboardEntry>> fetchLeaderboard() async {
     final List<User> users = await DatabaseHelper.fetchAllUsers();
-    int dateID = 1; //Used in order to ensure the leaderboard loads only that day's entries. It's just a placeholder right now. 
-    //Potentially make it the actual date? Will need to set up database more for it. 
+    int dateID = 1; 
     List<LeaderboardEntry> entries = []; 
 
     for (User user in users) {
-      if (user.connectionsScores.containsKey(dateID) && user.connectionsTimes.containsKey(dateID)) {
+      if (user.connectionsTimes.containsKey(dateID)) {
         entries.add(
-          LeaderboardEntry(username: user.name, score: user.connectionsScores[dateID]!, timeTaken: user.connectionsTimes[dateID]!),
+          LeaderboardEntry(username: user.name, timeTaken: user.connectionsTimes[dateID]!, score: user.connectionsScores[dateID]!),
         );
       }
     }
-
-/*
-    List<LeaderboardEntry> entries = [//Used for testing the page without database entries. Placements were decided randomly using wheelofnames.com 
-    LeaderboardEntry(username: "Jonnathan M.", score: 100, timeTaken: 90),
-    LeaderboardEntry(username: "Jonnathan B.", score: 80, timeTaken: 120),
-    LeaderboardEntry(username: "Beau", score: 75, timeTaken: 123),
-    LeaderboardEntry(username: "Bryce", score: 1, timeTaken: 999),
-    LeaderboardEntry(username: "Skylur", score: 50, timeTaken: 110),
-    LeaderboardEntry(username: "Tie Breaker A", score: 80, timeTaken: 100),
-    LeaderboardEntry(username: "Tie Breaker B", score: 80, timeTaken: 95),
-    ];
-*/
 
     // Sort by score descending, then by time ascending
     entries.sort((a, b) {
@@ -70,58 +60,94 @@ class _ConnectionsLeaderboardPageState extends State<ConnectionsLeaderboard> {
     return entries;
   }
 
+  Color getEntryColor(int index) {
+    if (index == 0) return Colors.deepPurple[200]!;
+    if (index == 1) return Colors.deepPurple[100]!;
+    if (index == 2) return Colors.deepPurple[50]!;
+    return Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Connections Daily Leaderboard", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold))),
-      body: FutureBuilder<List<LeaderboardEntry>>(
-        future: leaderboardData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error loading leaderboard", style: TextStyle(fontSize: 20)));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("No data available", style: TextStyle(fontSize: 20)));
-          }
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+        title: Text("Connections Daily Leaderboard"),
+      ),
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.7,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: FutureBuilder<List<LeaderboardEntry>>(
+            future: leaderboardData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text("Error loading leaderboard", style: TextStyle(fontSize: 20)));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text("No data available", style: TextStyle(fontSize: 20)));
+              }
 
-          List<LeaderboardEntry> leaderboard = snapshot.data!;
-          return ListView.builder(
-            itemCount: leaderboard.length,
-            itemBuilder: (context, index) {
-              LeaderboardEntry entry = leaderboard[index];
-              return ListTile(
-                contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                leading: CircleAvatar(
-                  radius: 25,
-                  child: Text("${index + 1}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                ),
-                title: Text(
-                  entry.username,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                subtitle: Text(
-                  "Time: ${entry.timeTaken}s",
-                  style: TextStyle(fontSize: 18, color: Colors.grey[700]),
-                ),
-                trailing: Text(
-                  "Score: ${entry.score}",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+              List<LeaderboardEntry> leaderboard = snapshot.data!;
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: ListView.separated(
+                  itemCount: leaderboard.length,
+                  separatorBuilder: (context, index) => Divider(color: Colors.grey[300], thickness: 1, height: 1),
+                  itemBuilder: (context, index) {
+                    LeaderboardEntry entry = leaderboard[index];
+                    return Container(
+                      width: double.infinity,
+                      color: getEntryColor(index),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        leading: CircleAvatar(
+                          radius: 25,
+                          child: Text("${index + 1}", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                        title: Text(
+                          entry.username,
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          "Time: ${entry.timeTaken}s",
+                          style: TextStyle(fontSize: 18, color: Colors.grey[700]),
+                        ),
+                        trailing: Text(
+                          "Score: ${entry.score}",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               );
             },
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 }
 
-// Model class for leaderboard entry
 class LeaderboardEntry {
   final String username;
-  final int score;
   final int timeTaken;
+  final int score;
 
-  LeaderboardEntry({required this.username, required this.score, required this.timeTaken});
+  LeaderboardEntry({required this.username, required this.timeTaken, required this.score});
 }

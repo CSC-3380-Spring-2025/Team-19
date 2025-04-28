@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
+import 'package:team_19/db/databasehelper.dart';
+import 'package:team_19/models/connections_model.dart';
 
 class ConnectionsGameScreen extends StatefulWidget {
   final String userName;
@@ -11,28 +13,69 @@ class ConnectionsGameScreen extends StatefulWidget {
 }
 
 class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
-  Map<String, List<String>> categories = {
+ /* Map<String, List<String>> categories = {
     "Colors": ["Red", "Blue", "Green", "Yellow"],
     "Fruits": ["Apple", "Banana", "Grape", "Orange"],
     "Animals": ["Dog", "Cat", "Horse", "Elephant"],
     "Instruments": ["Guitar", "Piano", "Violin", "Drums"]
-  };
+  };*/
 
-  late List<String> words;
+  Map<String, List<String>> categories = {'':['']};
+
+  List<String> words = [];
   List<String> selectedWords = [];
   Set<String> foundCategories = {};
   Map<String, List<String>> solvedWords = {}; // Category to its solved words
   int attemptsLeft = 4;
+  bool isGameOver = false;
 
   Timer? _gameTimer;
   int elapsedSeconds = 0;
 
+  int _currentLevelId = 1;
+
   @override
   void initState() {
     super.initState();
-    words = categories.values.expand((e) => e).toList();
-    words.shuffle(Random());
-    _startTimer();
+    _loadLevel();
+    _startTimer(); // Start the timer when the game begins
+  }
+
+
+  Future<void> _loadLevel() async {
+    try {
+    final Connnection? level = await DatabaseHelper.fetchConnectionById(_currentLevelId);
+
+    if (level != null) {
+      setState(() {
+        categories = level.categories;
+        _currentLevelId++; // Move to next level for next time
+        words = categories.values.expand((e) => e).toList();
+        words.shuffle(Random());
+      });
+    } else {
+      setState(() {
+        categories = {'':['']};
+      });
+    }
+  } catch (e) {
+    setState(() {
+      categories = {'':['']};
+    });
+    print('Error loading Scatergories level: $e');
+  }
+  }
+
+  Future<void> _loadNextLevel() async {
+    setState(() {
+      isGameOver = false; 
+      selectedWords = [];
+      foundCategories = {};
+      attemptsLeft = 4;
+      elapsedSeconds = 0;
+      _startTimer();     
+    });
+    await _loadLevel();        
   }
 
   void _startTimer() {
@@ -124,12 +167,18 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         selectedWords.clear();
 
         if (foundCategories.length == categories.length) {
-          _gameTimer?.cancel();
-          showWinPopup();
+          _gameTimer?.cancel(); // Stop the timer when game is won
+          setState(() {
+            isGameOver = true;
+          });
+          showWinPopup(attemptsLeft);
         }
 
         if (attemptsLeft == 0) {
-          _gameTimer?.cancel();
+          _gameTimer?.cancel(); // Stop the timer when out of attempts
+          setState(() {
+            isGameOver = true;
+          });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Game Over! No attempts left.")),
           );
@@ -242,6 +291,11 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           ),
         ],
       ),
+
+      
+      // HUGE MERGE CONFLICT HERE, MAY NEED RESOLVING
+      
+//<<<<<<< connections-final-version
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -252,6 +306,37 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
+//=======
+      body: categories.isEmpty
+      ? Center(child: CircularProgressIndicator())
+      : Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 10),
+          Image.asset(
+            'assets/images/connections_logo.png',
+            height: 100,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "Attempts Left: $attemptsLeft",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          // Set a fixed height to fit all the words
+          Expanded(
+            // This ensures the words grid takes up available space
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: GridView.builder(
+                physics: const NeverScrollableScrollPhysics(), // Prevents the user from scrolling, they should have no need to 
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: 4, // May need to adjust to fit more nicely in the future if more things get added to the page
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+//>>>>>>> dev
+
+      
                 ),
               ),
             ),
@@ -278,9 +363,14 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
                 child: Text("Submit", style: TextStyle(fontSize: 18)),
               ),
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+          const SizedBox(height: 40),
+          if (isGameOver)
+            ElevatedButton(
+              onPressed: _loadNextLevel,
+              child: Text('Next Level'),
+            )
+        ],
       ),
     );
   }

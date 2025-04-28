@@ -12,6 +12,8 @@ class GameSelectionScreen extends StatelessWidget {
       backgroundColor: Colors.deepPurple[50],
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
+        iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
         title: const Text(
           "Select a Game",
           style: TextStyle(fontWeight: FontWeight.bold),
