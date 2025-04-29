@@ -98,6 +98,12 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
     });
   }
 
+  final TextStyle appBarTitleStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 22,
+    fontWeight: FontWeight.bold,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,6 +111,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
         iconTheme: IconThemeData(color: Colors.white),
+        titleTextStyle: appBarTitleStyle,
         title: Text("Letter Quest"),
         actions: [
           Row(
@@ -114,7 +121,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
                 child: Center(
                   child: Text(
                     "⏱️ $secondsElapsed s",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: appBarTitleStyle,
                   ),
                 ),
               ),
