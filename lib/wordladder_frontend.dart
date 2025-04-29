@@ -172,6 +172,7 @@ class _WordLadderGameApp extends State<WordLadderGame> {
               _timer.cancel();
               showDialog(
                 context: context,
+                barrierDismissible: false,
                 builder: (context) => AlertDialog(
                   title: Text('How to Play Word Ladder'),
                   content: Text(

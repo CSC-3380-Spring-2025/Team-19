@@ -335,6 +335,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               _gameTimer?.cancel();
               showDialog(
                 context: context,
+                barrierDismissible: false,
                 builder: (context) => AlertDialog(
                   title: const Text('How to Play Scattergories'),
                   content: const Text(
