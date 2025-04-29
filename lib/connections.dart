@@ -336,7 +336,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text('How to Play Connections'),
+                  title: const Text('How to Play Scattergories'),
                   content: const Text(
                     "Welcome to Scattergories!\n\n"
                     "You will be given a set of 16 words.\n\n"
