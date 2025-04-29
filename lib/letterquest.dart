@@ -134,6 +134,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
               _timer.cancel();
               showDialog(
                 context: context,
+                barrierDismissible: false,
                 builder: (_) => AlertDialog(
                   title: Text("How to Play Letter Quest"),
                   content: Text(

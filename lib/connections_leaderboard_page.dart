@@ -75,7 +75,7 @@ class _ConnectionsLeaderboardPageState extends State<ConnectionsLeaderboard> {
         backgroundColor: Colors.deepPurple,
         iconTheme: IconThemeData(color: Colors.white),
         titleTextStyle: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-        title: Text("Connections Daily Leaderboard"),
+        title: Text("Scattergories Daily Leaderboard"),
       ),
       body: Center(
         child: Container(
