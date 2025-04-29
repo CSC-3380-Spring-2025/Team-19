@@ -46,7 +46,7 @@ class LeaderboardSelectionScreen extends StatelessWidget {
                 children: [
                   _buildGameTile(
                     context,
-                    'Connections',
+                    'Scattergories',
                     'assets/images/connections_logo.png',
                     () => Navigator.pushNamed(context, '/connectionsleaderboard'),
                   ),
