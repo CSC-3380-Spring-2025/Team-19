@@ -287,7 +287,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: getCategoryColorFromName(category, categories),
+                color: Color.lerp(getCategoryColorFromName(category, categories), Colors.black, 0.45)!,
               ),
             ),
             const SizedBox(height: 16),
