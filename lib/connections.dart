@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:async';
 import 'package:team_19/db/databasehelper.dart';
 import 'package:team_19/models/connections_model.dart';
+import 'package:team_19/models/user_model.dart';
 
 class ConnectionsGameScreen extends StatefulWidget {
   final String userName;
@@ -22,7 +23,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
   bool isGameOver = false;
 
   Timer? _gameTimer;
-  int elapsedSeconds = 0;
+  int secondsElapsed = 0;
 
   int _currentLevelId = 1;
 
@@ -63,7 +64,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
       selectedWords = [];
       foundCategories = {};
       attemptsLeft = 4;
-      elapsedSeconds = 0;
+      secondsElapsed = 0;
       solvedWords = {};
       _startTimer();
     });
@@ -72,9 +73,9 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
 
   void _startTimer() {
     _gameTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (elapsedSeconds < 999) {
+      if (secondsElapsed < 999) {
         setState(() {
-          elapsedSeconds++;
+          secondsElapsed++;
         });
       } else {
         _gameTimer?.cancel();
@@ -95,9 +96,59 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     });
   }
 
-  void showWinPopup() {
+  void _showWinPopup() async {
     int attemptsTaken = 4 - attemptsLeft;
-    int score = 10000 - (attemptsTaken * 2500) - (elapsedSeconds * 10);
+    int score = 10000 - (attemptsTaken * 2500) - (secondsElapsed * 10);
+
+    User? winner = await DatabaseHelper.fetchUserByName(widget.userName);
+
+    if (winner != null) {
+      int actualID = _currentLevelId - 1;
+
+      bool savedNew = false;
+
+      Map<int, int> winnerScores = winner.connectionsScores;
+      
+      if(winnerScores[actualID] != null)
+      {
+        if(winnerScores[actualID]! < score)
+        {
+          winnerScores[actualID] = score;
+          winner.connectionsScores = winnerScores;
+
+          savedNew = true;
+        }
+      }
+      else
+      {
+        winnerScores[actualID] = score;
+        winner.connectionsScores = winnerScores;
+
+        savedNew = true;
+      }
+
+      if(savedNew)
+      {
+        Map<int, int> winnerTimes = winner.connectionsTimes;
+        
+        if(winnerTimes[actualID] != null)
+        {
+          if(winnerTimes[actualID]! > secondsElapsed)
+          {
+            winnerTimes[actualID] = secondsElapsed;
+            winner.connectionsTimes = winnerTimes;
+          }
+        }
+        else
+        {
+          winnerTimes[actualID] = secondsElapsed;
+          winner.connectionsTimes = winnerTimes;
+        }
+      }
+
+
+      await DatabaseHelper.updateUser(winner);
+    }
 
     showDialog(
       context: context,
@@ -166,7 +217,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           setState(() {
             isGameOver = true;
           });
-          showWinPopup();
+          _showWinPopup();
         }
 
         if (attemptsLeft == 0) {
@@ -188,16 +239,30 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     super.dispose();
   }
 
-  Color getCategoryColor(String category) {
-    switch (category) {
-      case "Colors":
-        return Colors.redAccent;
-      case "Fruits":
+  int getCategoryDifficulty(String category, Map<String, List<String>> categories) {
+    List<String> orderedCategories = categories.keys.toList();
+
+    int index = orderedCategories.indexOf(category);
+
+    if (index == -1) {
+      return 0;
+    }
+
+    return index + 1;
+  }
+
+  Color getCategoryColorFromName(String categoryName, Map<String, List<String>> categories) {
+    int difficulty = getCategoryDifficulty(categoryName, categories);
+
+    switch (difficulty) {
+      case 1:
+        return Colors.yellow;
+      case 2:
         return const Color.fromARGB(255, 85, 225, 90);
-      case "Animals":
-        return const Color.fromARGB(255, 149, 16, 144);
-      case "Instruments":
-        return Colors.blueAccent;
+      case 3:
+        return Colors.blue;
+      case 4:
+        return const Color.fromARGB(255, 171, 64, 167);
       default:
         return Colors.grey;
     }
@@ -214,7 +279,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: wordsList.map((word) => buildWordTile(word, true, getCategoryColor(category))).toList(),
+              children: wordsList.map((word) => buildWordTile(word, true, getCategoryColorFromName(category, categories))).toList(),
             ),
             const SizedBox(height: 4),
             Text(
@@ -222,7 +287,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: getCategoryColor(category),
+                color: getCategoryColorFromName(category, categories),
               ),
             ),
             const SizedBox(height: 16),
@@ -257,7 +322,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Center(
               child: Text(
-                "⏱️ $elapsedSeconds s",
+                "⏱️ $secondsElapsed s",
                 style: appBarTitleStyle,
               ),
             ),
@@ -300,18 +365,10 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         child: Column(
           children: [
             Center(
-              child: Text(
-                "Player: ${widget.userName}",
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Image.asset(
+                'assets/images/connections_logo.png',
+                height: 150,
               ),
-            ),
-            const SizedBox(height: 10),
-            Image.asset(
-              'assets/images/connections_logo.png',
-              height: 100,
             ),
             const SizedBox(height: 10),
             Text(
@@ -351,14 +408,20 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
   Widget buildWordTile(String word, bool isSolved, Color backgroundColor) {
     bool isSelected = selectedWords.contains(word);
 
+    // Create a lighter version of the background color
+    Color lightBackgroundColor = Color.lerp(backgroundColor, Colors.white, 0.6)!;
+
     return GestureDetector(
       onTap: isSolved ? null : () => toggleSelection(word),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue : backgroundColor,
+          color: isSelected ? Colors.blue : lightBackgroundColor,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.black),
+          border: Border.all(
+            color: backgroundColor,  // Border color is original background color
+            width: 3, // Make the border thicker
+          ),
         ),
         child: Text(
           word,
