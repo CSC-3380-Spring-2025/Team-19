@@ -101,7 +101,10 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.deepPurple[50],
       appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        iconTheme: IconThemeData(color: Colors.white),
         title: Text("Letter Quest"),
         actions: [
           Row(

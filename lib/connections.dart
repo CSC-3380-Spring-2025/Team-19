@@ -312,6 +312,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     );
 
     return Scaffold(
+      backgroundColor: Colors.deepPurple[50],
       appBar: AppBar(
         title: const Text("Scattergories"),
         backgroundColor: Colors.deepPurple,
