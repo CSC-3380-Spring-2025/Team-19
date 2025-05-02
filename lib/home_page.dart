@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:team_19/db/databasehelper.dart';
 import 'package:team_19/game_selector.dart';
+import 'package:team_19/leaderboard_selector.dart';
 import 'package:team_19/models/user_model.dart';
+import 'package:team_19/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -75,10 +77,22 @@ class _HomePageState extends State<HomePage> {
         title: Text("WordStorm", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
         actions: [
+          if (userName != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Center(
+                  child: Text(
+                    userName!,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(userName: userName!),
+              ),
+              );
             }
           )
         ]
@@ -106,7 +120,9 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 20), //Spacing between the play and leaderboard buttons
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/leaderboardselection');
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LeaderboardSelectionScreen(userName: userName!),
+                ),
+              );
               },
               style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
