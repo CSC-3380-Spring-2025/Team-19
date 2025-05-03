@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:team_19/connections.dart';
 import 'package:team_19/letterquest.dart';
 import 'package:team_19/wordladder_frontend.dart';
+import 'package:team_19/profile_page.dart';
 
 class GameSelectionScreen extends StatelessWidget {
   final String userName;
@@ -19,6 +20,29 @@ class GameSelectionScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Center(
+              child: Text(
+                userName,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  ),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(userName: userName),
+              ),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),

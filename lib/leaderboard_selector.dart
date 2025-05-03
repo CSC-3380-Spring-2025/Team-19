@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:team_19/profile_page.dart';
 
 class LeaderboardSelectionScreen extends StatelessWidget {
+  final String userName;
+  LeaderboardSelectionScreen({required this.userName});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,10 +18,25 @@ class LeaderboardSelectionScreen extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Center(
+              child: Text(
+                userName,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white, // 👈 makes it readable on purple
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(userName: userName),
+              ),
+              );
             },
           ),
         ],
