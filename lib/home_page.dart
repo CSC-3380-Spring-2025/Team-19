@@ -101,10 +101,9 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 10),
             Image.asset(
               'assets/images/wordstorm.png',
-              height: 500,
+              height: 480,
             ),
             ElevatedButton(
               onPressed: () {
