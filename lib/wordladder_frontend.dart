@@ -205,7 +205,6 @@ class _WordLadderGameApp extends State<WordLadderGame> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 10),
           Image.asset(
             'assets/images/wordladder_logo.png',
             height: 200,
@@ -220,17 +219,15 @@ class _WordLadderGameApp extends State<WordLadderGame> {
                   .map((word) => Text(word, style: TextStyle(fontSize: 24)))
                   .toList(),
             ),
-            SizedBox(height: 20),
             TextField(
               controller: wordController,
               onSubmitted: (_) => checkGuess(),
               decoration: InputDecoration(labelText: "Enter your guess"),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 10), 
             ElevatedButton(onPressed: checkGuess, child: Text("Submit Guess")),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Text("Incorrect Guesses: $incorrectGuesses"),
-            Text("Score: $score"),
             if (isGameOver)
               ElevatedButton(
                 onPressed: _loadNextLevel,
