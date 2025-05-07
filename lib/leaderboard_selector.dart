@@ -47,13 +47,26 @@ class LeaderboardSelectionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
-              child: Text(
-                "Pick a Leaderboard:",
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple[800],
-                ),
+              child: Column(
+                children: [
+                  Text(
+                    "Pick a Leaderboard:",
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple[800],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Leaderboards only reflect scores from the 1st level of each game. The rest are for fun!",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.deepPurple[700],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 32),
