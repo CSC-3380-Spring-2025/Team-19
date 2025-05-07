@@ -61,7 +61,7 @@ class GameSelectionScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8), // Add spacing between the title and the new text
             Text(
-              "Timer will start upon clicking a game",
+              "Timer will start upon clicking a game. Only the 1st level of each game will qualify for leaderboards.",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.deepPurple[600],
