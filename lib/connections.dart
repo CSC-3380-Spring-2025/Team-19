@@ -27,48 +27,12 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
 
   int _currentLevelId = 1;
 
+  bool hasSelectedLevel = false;
+
   @override
   void initState() {
     super.initState();
-    _loadLevel();
-    _startTimer();
-  }
-
-  Future<void> _loadLevel() async {
-    try {
-      final Connnection? level = await DatabaseHelper.fetchConnectionById(_currentLevelId);
-
-      if (level != null) {
-        setState(() {
-          categories = level.categories;
-          _currentLevelId++;
-          words = categories.values.expand((e) => e).toList();
-          words.shuffle(Random());
-        });
-      } else {
-        setState(() {
-          categories = {'': ['']};
-        });
-      }
-    } catch (e) {
-      setState(() {
-        categories = {'': ['']};
-      });
-      print('Error loading Scattergories level: $e');
-    }
-  }
-
-  Future<void> _loadNextLevel() async {
-    setState(() {
-      isGameOver = false;
-      selectedWords = [];
-      foundCategories = {};
-      attemptsLeft = 4;
-      secondsElapsed = 0;
-      solvedWords = {};
-      _startTimer();
-    });
-    await _loadLevel();
+    _showLevelSelector();
   }
 
   void _startTimer() {
@@ -103,7 +67,7 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
     User? winner = await DatabaseHelper.fetchUserByName(widget.userName);
 
     if (winner != null) {
-      int actualID = _currentLevelId - 1;
+      int actualID = _currentLevelId;
 
       bool savedNew = false;
 
@@ -329,6 +293,14 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
             ),
           ),
           IconButton(
+            icon: Icon(Icons.grid_view),
+            tooltip: 'Select Level',
+            onPressed: () {
+              _gameTimer?.cancel();
+              _showLevelSelector();
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.help_outline),
             tooltip: 'How to Play',
             onPressed: () {
@@ -396,11 +368,6 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            if (isGameOver)
-              ElevatedButton(
-                onPressed: _loadNextLevel,
-                child: const Text('Next Level'),
-              ),
           ],
         ),
       ),
@@ -435,5 +402,96 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
         ),
       ),
     );
+  }
+
+   void _showLevelSelector() async {
+    List<Connnection> allLevels = await DatabaseHelper.fetchAllConnections();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Select a Level',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 350,
+            child: Scrollbar(
+              thumbVisibility: true,
+              child: ListView.separated(
+                itemCount: allLevels.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  int levelId = allLevels[index].id;
+                  bool isSelected = _currentLevelId == levelId;
+
+                  return ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    tileColor: isSelected ? Colors.deepPurple[100] : Colors.grey[100],
+                    title: Text(
+                      'Level $levelId',
+                      style: TextStyle(
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected ? Colors.deepPurple : Colors.black,
+                      ),
+                    ),
+                    onTap: () async {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        _currentLevelId = levelId;
+                        hasSelectedLevel = true;
+                      });
+                      await _loadLevelById(levelId);
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: hasSelectedLevel
+            ? [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ]
+            : [],
+        );
+      },
+    );
+  }
+
+  Future<void> _loadLevelById(int id) async {
+    try {
+      final Connnection? level = await DatabaseHelper.fetchConnectionById(id);
+      if (level != null) {
+        setState(() {
+          categories = level.categories;
+          isGameOver = false;
+          selectedWords = [];
+          foundCategories = {};
+          attemptsLeft = 4;
+          secondsElapsed = 0;
+          solvedWords = {};
+          words = categories.values.expand((e) => e).toList();
+          words.shuffle(Random());
+          _startTimer();
+        });
+      }
+    } catch (e) {
+      print('Error loading level $id: $e');
+    }
   }
 }
