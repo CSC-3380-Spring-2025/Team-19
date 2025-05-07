@@ -12,14 +12,12 @@ class WordLadderGame extends StatefulWidget {
 }
 
 class _WordLadderGameApp extends State<WordLadderGame> {
-  //final List<String> wordList = ['BASKET', 'BALL', 'GAME', 'SHOW', 'CASE'];
   List<String> wordList = [""];
   late List<String> currentWordLadder;
   int score = 10000;
   int incorrectGuesses = 0;
   int currentIndex = 1;
   TextEditingController wordController = TextEditingController();
-  bool isGameOver = false;
 
   // Timer-related
   late Timer _timer;
@@ -27,55 +25,19 @@ class _WordLadderGameApp extends State<WordLadderGame> {
 
   int _currentLevelId = 1;
 
+  bool hasSelectedLevel = false;
+
   @override
   void initState() {
     super.initState();
     currentWordLadder = hideWords(wordList);
-    _loadLevel();
-    _startTimer();
+    _showLevelSelector();
   }
 
   @override
   void dispose() {
     _timer.cancel();
     super.dispose();
-  }
-
-  Future<void> _loadLevel() async {
-    try {
-    final Wordladder? level = await DatabaseHelper.fetchWordladderById(_currentLevelId);
-
-    if (level != null) {
-      setState(() {
-        wordList = level.wordList; 
-        currentWordLadder = hideWords(wordList); 
-        _currentLevelId++; // Move to next level for next time
-      });
-    } else {
-      setState(() {
-        wordList = [""];
-        currentWordLadder = [""];
-      });
-    }
-  } catch (e) {
-    setState(() {
-      wordList = [""];
-      currentWordLadder = [""];
-    });
-    print('Error loading Wordladder level: $e');
-  }
-  }
-
-  Future<void> _loadNextLevel() async {
-    setState(() {
-      isGameOver = false; 
-      score = 10000;
-      incorrectGuesses = 0;
-      currentIndex = 1;
-      secondsElapsed = 0; 
-    });
-    await _loadLevel(); 
-    _startTimer();       
   }
 
   void _startTimer() {
@@ -123,17 +85,6 @@ class _WordLadderGameApp extends State<WordLadderGame> {
     }
   }
 
-  void resetGame() {
-    setState(() {
-      currentIndex = 1;
-      incorrectGuesses = 0;
-      score = 10000;
-      secondsElapsed = 0;
-      currentWordLadder = hideWords(wordList);
-      _startTimer();
-    });
-  }
-
   final TextStyle appBarTitleStyle = TextStyle(
       color: Colors.white,
       fontSize: 22,
@@ -166,6 +117,14 @@ class _WordLadderGameApp extends State<WordLadderGame> {
             ),
           ),
           IconButton(
+            icon: Icon(Icons.grid_view),
+            tooltip: 'Select Level',
+            onPressed: () {
+              _timer.cancel();
+              _showLevelSelector();
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.help_outline),
             tooltip: 'How to Play',
             onPressed: () {
@@ -177,11 +136,11 @@ class _WordLadderGameApp extends State<WordLadderGame> {
                   title: Text('How to Play Word Ladder'),
                   content: Text(
                     "Welcome to Word Ladder!\n\n"
-                    "You will be given a starting word and a hint for the next word, which begins with the first letter provided.\n\n"
-                    "Each word connects to the next in a meaningful way, forming a continuous chain.\n\n"
-                    "For example: 'dog' → 'F___' (where the answer could be 'food').\n\n"
-                    "Your goal is to correctly complete the sequence as efficiently as possible.\n\n"
-                    "Think of words that logically follow the previous one and match the given hint!",
+                    "🖇️ You will be given a starting word and a hint for the next word, which begins with the first letter provided.\n\n"
+                    "⛓️ Each word connects to the next in a meaningful way, forming a continuous chain.\n\n"
+                    "💡 For example: 'Dog' → 'F___' (where the answer could be 'food').\n\n"
+                    "🌟 Your goal is to correctly complete the sequence as efficiently as possible.\n\n"
+                    "🤨💭 Think of words that logically follow the previous one and match the given hint!",
                   ),
                   actions: [
                     TextButton(
@@ -205,7 +164,6 @@ class _WordLadderGameApp extends State<WordLadderGame> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 10),
           Image.asset(
             'assets/images/wordladder_logo.png',
             height: 200,
@@ -220,22 +178,15 @@ class _WordLadderGameApp extends State<WordLadderGame> {
                   .map((word) => Text(word, style: TextStyle(fontSize: 24)))
                   .toList(),
             ),
-            SizedBox(height: 20),
             TextField(
               controller: wordController,
               onSubmitted: (_) => checkGuess(),
               decoration: InputDecoration(labelText: "Enter your guess"),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 10), 
             ElevatedButton(onPressed: checkGuess, child: Text("Submit Guess")),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             Text("Incorrect Guesses: $incorrectGuesses"),
-            Text("Score: $score"),
-            if (isGameOver)
-              ElevatedButton(
-                onPressed: _loadNextLevel,
-                child: Text('Next Level'),
-              )
           ],
         ),
       ),
@@ -245,15 +196,11 @@ class _WordLadderGameApp extends State<WordLadderGame> {
   void _showWinPopup() async
   {
     _timer.cancel();
-    setState(() {
-      isGameOver = true;
-    });
-
 
     User? winner = await DatabaseHelper.fetchUserByName(widget.userName);
 
     if (winner != null) {
-      int actualID = _currentLevelId - 1;
+      int actualID = _currentLevelId;
 
       bool savedNew = false;
 
@@ -310,7 +257,6 @@ class _WordLadderGameApp extends State<WordLadderGame> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              //resetGame();
             },
             child: Text("OK"),
           ),
@@ -324,5 +270,93 @@ class _WordLadderGameApp extends State<WordLadderGame> {
         ],
       ),
     );
+  }
+
+  void _showLevelSelector() async {
+    List<Wordladder> allLevels = await DatabaseHelper.fetchAllWordladders();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Select a Level',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 350,
+            child: Scrollbar(
+              thumbVisibility: true,
+              child: ListView.separated(
+                itemCount: allLevels.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  int levelId = allLevels[index].id;
+                  bool isSelected = _currentLevelId == levelId;
+
+                  return ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    tileColor: isSelected ? Colors.deepPurple[100] : Colors.grey[100],
+                    title: Text(
+                      'Level $levelId',
+                      style: TextStyle(
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected ? Colors.deepPurple : Colors.black,
+                      ),
+                    ),
+                    onTap: () async {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        _currentLevelId = levelId;
+                        hasSelectedLevel = true;
+                      });
+                      await _loadLevelById(levelId);
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: hasSelectedLevel
+            ? [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ]
+            : [],
+        );
+      },
+    );
+  }
+
+  Future<void> _loadLevelById(int id) async {
+    try {
+      final Wordladder? level = await DatabaseHelper.fetchWordladderById(id);
+      if (level != null) {
+        setState(() {
+          wordList = level.wordList;
+          currentWordLadder = hideWords(wordList);
+          currentIndex = 1;
+          score = 10000;
+          incorrectGuesses = 0;
+          secondsElapsed = 0;
+          _startTimer();
+        });
+      }
+    } catch (e) {
+      print('Error loading level $id: $e');
+    }
   }
 }

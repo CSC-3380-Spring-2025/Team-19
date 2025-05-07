@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:team_19/profile_page.dart';
 
 class LeaderboardSelectionScreen extends StatelessWidget {
+  final String userName;
+  LeaderboardSelectionScreen({required this.userName});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,10 +18,25 @@ class LeaderboardSelectionScreen extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Center(
+              child: Text(
+                userName,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white, // 👈 makes it readable on purple
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(userName: userName),
+              ),
+              );
             },
           ),
         ],
@@ -29,13 +47,26 @@ class LeaderboardSelectionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Center(
-              child: Text(
-                "Pick a Leaderboard:",
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple[800],
-                ),
+              child: Column(
+                children: [
+                  Text(
+                    "Pick a Leaderboard:",
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple[800],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Leaderboards only reflect scores from the 1st level of each game. The rest are for fun!",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.deepPurple[700],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 32),

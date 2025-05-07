@@ -29,13 +29,14 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
 
   int _currentLevelId = 1;
 
+  bool hasSelectedLevel = false;
+
   late ElevatedButton submitButton;
 
   @override
   void initState() {
     super.initState();
-    _loadLevel();
-    _startTimer();
+    _showLevelSelector();
   }
 
   @override
@@ -43,47 +44,6 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
     _timer.cancel();
     _phraseController.dispose(); 
     super.dispose();
-  }
-
-  Future<void> _loadLevel() async {
-    try {
-    final Letterquest? level = await DatabaseHelper.fetchLetterquestById(_currentLevelId);
-
-    if (level != null) {
-      setState(() {
-        phrase = level.phrase.toUpperCase(); // Force uppercase
-        hint = level.hint;
-        _currentLevelId++; // Move to next level for next time
-      });
-    } else {
-      setState(() {
-        phrase = '';
-        hint = 'No more puzzles available.';
-      });
-    }
-  } catch (e) {
-    setState(() {
-      phrase = '';
-      hint = 'Error loading puzzle.';
-    });
-    print('Error loading Letterquest level: $e');
-  }
-  }
-
-  Future<void> _loadNextLevel() async {
-    setState(() {
-      isGameOver = false; 
-      phrase = "";
-      hint = "";
-      guessedLetters = {};
-      isSolvingPhrase = false;
-      fullPhraseAttempt = "";
-      incorrectAttempts = 0;
-      secondsElapsed = 0; 
-      showSubmitButton = true;
-      _startTimer();     
-    });
-    await _loadLevel();        
   }
 
   void _startTimer() {
@@ -126,6 +86,14 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
                 ),
               ),
             ],
+          ),
+          IconButton(
+            icon: Icon(Icons.grid_view),
+            tooltip: 'Select Level',
+            onPressed: () {
+              _timer.cancel();
+              _showLevelSelector();
+            },
           ),
           IconButton(
             icon: Icon(Icons.help_outline),
@@ -172,13 +140,14 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
             height: 200,
           ),
           _buildPhraseDisplay(),
+          SizedBox(height: 15),
           Text(hint, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-          SizedBox(height: 10),
+          SizedBox(height:15),
           Text("Incorrect Attempts: $incorrectAttempts"),
-          SizedBox(height: 20),
+          SizedBox(height: 15),
           if (!isSolvingPhrase) _buildSolveButton(),
           if (isSolvingPhrase) _buildPhraseGuessInput(),
-          SizedBox(height: 20),
+          SizedBox(height: 15),
           if (!isSolvingPhrase && !isGameOver)
             WordLadderKeyboard(
               guessedLetters: guessedLetters,
@@ -187,18 +156,15 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
               onEnter: () {},
               onDelete: () {},
             ),
-          if (isGameOver)
-            ElevatedButton(
-              onPressed: _loadNextLevel,
-              child: Text('Next Level'),
-            )
         ],
       ),
     );
   }
 
   Widget _buildPhraseDisplay() {
-    return Wrap(
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    child: Wrap(
       alignment: WrapAlignment.center,
       spacing: 4.0,
       runSpacing: 8.0,
@@ -216,8 +182,9 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
           ),
         );
       }).toList(),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildSolveButton() {
     return ElevatedButton(
@@ -311,7 +278,7 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
     User? winner = await DatabaseHelper.fetchUserByName(widget.userName);
 
     if (winner != null) {
-      int actualID = _currentLevelId - 1;
+      int actualID = _currentLevelId;
 
       Map<int, int> winnerTimes = winner.letterquestTimes;
       
@@ -358,5 +325,97 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
         ],
       ),
     );
+  }
+
+  void _showLevelSelector() async {
+    List<Letterquest> allLevels = await DatabaseHelper.fetchAllLetterquests();
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Select a Level',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 350,
+            child: Scrollbar(
+              thumbVisibility: true,
+              child: ListView.separated(
+                itemCount: allLevels.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  int levelId = allLevels[index].id;
+                  bool isSelected = _currentLevelId == levelId;
+
+                  return ListTile(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    tileColor: isSelected ? Colors.deepPurple[100] : Colors.grey[100],
+                    title: Text(
+                      'Level $levelId',
+                      style: TextStyle(
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected ? Colors.deepPurple : Colors.black,
+                      ),
+                    ),
+                    onTap: () async {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        _currentLevelId = levelId;
+                        hasSelectedLevel = true;
+                      });
+                      await _loadLevelById(levelId);
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: hasSelectedLevel
+            ? [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ]
+            : [],
+        );
+      },
+    );
+  }
+
+  Future<void> _loadLevelById(int id) async {
+    try {
+      final Letterquest? level = await DatabaseHelper.fetchLetterquestById(id);
+      if (level != null) {
+        setState(() {
+          phrase = level.phrase.toUpperCase();
+          hint = level.hint;
+          guessedLetters.clear();
+          isGameOver = false;
+          isSolvingPhrase = false;
+          fullPhraseAttempt = "";
+          incorrectAttempts = 0;
+          secondsElapsed = 0; 
+          showSubmitButton = true;
+          _currentLevelId = level.id;
+          _startTimer();
+        });
+      }
+    } catch (e) {
+      print('Error loading level $id: $e');
+    }
   }
 }
