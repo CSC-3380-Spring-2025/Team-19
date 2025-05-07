@@ -18,6 +18,7 @@ Edge
 
 ## Important Links
 Kanban Board: [Github Projects](https://github.com/orgs/CSC-3380-Spring-2025/projects/9/views/1)\
+Designs: [Wireframes on Figma](https://www.figma.com/design/uCHhd6tCuB0Bs7pdC7K1qy/WireFrames?node-id=15-67&t=sZ9%E2%80%AC16LCcMQ5tXSeY-1%E2%80%AC) (remaining designs are in assets folder)\
 Styles Guide: [Effective Dart](https://dart.dev/effective-dart/style)
 
 ## How to Run Dev and Test Environment

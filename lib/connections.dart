@@ -377,7 +377,6 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
   Widget buildWordTile(String word, bool isSolved, Color backgroundColor) {
     bool isSelected = selectedWords.contains(word);
 
-    // Create a lighter version of the background color
     Color lightBackgroundColor = Color.lerp(backgroundColor, Colors.white, 0.6)!;
 
     return GestureDetector(
@@ -388,8 +387,8 @@ class _ConnectionsGameScreenState extends State<ConnectionsGameScreen> {
           color: isSelected ? Colors.blue : lightBackgroundColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: backgroundColor,  // Border color is original background color
-            width: 3, // Make the border thicker
+            color: backgroundColor,
+            width: 3,
           ),
         ),
         child: Text(
