@@ -21,15 +21,19 @@ Kanban Board: [Github Projects](https://github.com/orgs/CSC-3380-Spring-2025/pro
 Styles Guide: [Effective Dart](https://dart.dev/effective-dart/style)
 
 ## How to Run Dev and Test Environment
-To run this project install the framework - Flutter SDK linked in this website: https://docs.flutter.dev/get-started/install/windows/web\
-Proceed to install the Dart extension on VS Code \
+To run this project install the framework - Flutter SDK linked in this website:\ https://docs.flutter.dev/get-started/install/windows/web\
+Additionally, ensure that Google Chrome is downloaded:\
+https://www.google.com/chrome\
+Proceed to install the Dart extension and Flutter extension (if you haven't already) on VS Code \
 Once complete, download the dependancies by running `flutter pub get` in the terminal window\
 Next, type `flutter run -d chrome` in the command line
 
 
 
 ## Dependencies (installed by running `flutter pub get`)
-flutter-sdk\
+flutter-sdk: 3.29.3\
+dart: 3.7.2\
+devtools: 2.42.3\
 cupertino_icons: ^1.0.8\
 english_words: ^4.0.0\
 provider: ^6.1.2\
@@ -38,15 +42,18 @@ sqflite_common_ffi: ^2.3.1\
 sqflite_common_ffi_web: ^0.4.0\
 path: ^1.9.1
 
-
-
+### Additional Recommended Extensions:
+[VSCode Flutter Extension](https://marketplace.visualstudio.com/items?itemName=Dart-Code.flutter)\
+[VSCode Dart Extension](https://marketplace.visualstudio.com/items?itemName=Dart-Code.dart-code)
 
 ## Commands
 
-To ensure you're working with the latest stable version of the codebase, switch to the main branch:\
+To ensure you're working with the latest stable version of the codebase, open the VSCode terminal and switch to the main branch:\
 `git checkout main`\
 `git pull origin main`
 
 To Install Dependencies
 If it's your first time running the project or new dependencies were added, install them by running:\
 `flutter pub get`
+
+Finally, run `flutter run -d chrome` to run the project.
