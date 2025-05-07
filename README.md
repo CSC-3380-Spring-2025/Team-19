@@ -1,53 +1,52 @@
-# Name of the Project : Team 19
-# Members
+# WordStorm (Team 19)
+## Members
 Project Manager: Jonathan Breaux (Jbreaux05)\
 Communications Lead: Jonathan Martinez (Jonathan Martinez12)\
 Git Master: Beau Fontenot (bfontenot23)\
 Design Lead: Skylar Flemming (SkyMFlem777)\
 Quality Assurance Tester: Bryce Shifflett (bshiff2)
 
-# About Our Software
+## About Our Software
+WordStorm is a fun and mentally challenging collection of word games built with Flutter. It includes three games: Connections, LetterQuest, and Word Ladder. Each game was designed to challenge your vocabulary and problem-solving skills in a different way.
 
-Describe a little about what the project is about here.
+Players start from a simple game selection screen, and once a game begins, a timer tracks how quickly they complete the challenge giving the player a score.The layout is clean, the design is user-friendly, and the games are easy to pick up and play using our how to play section.
+
 ## Browsers Tested on
-- Coming soon
-# Important Links
-Kanban Board: [link](https://github.com/orgs/CSC-3380-Spring-2025/projects/9/views/1)\
-Designs: [link]\
-Styles Guide(s):
-- [Python PEP8](https://peps.python.org/pep-0008/)
-- [Effective Dart](https://dart.dev/effective-dart/style)
+Chrome\
+Firefox\
+Edge
 
-# How to Run Dev and Test Environment
+## Important Links
+Kanban Board: [Github Projects](https://github.com/orgs/CSC-3380-Spring-2025/projects/9/views/1)\
+Styles Guide: [Effective Dart](https://dart.dev/effective-dart/style)
 
-## Dependencies
-- List all dependencies here
-- Don't forget to include versions
-### Downloading Dependencies
-Describe where to download the dependencies here. Some will likely require a web download. Provide links here. For IDE extensions, make sure your project works with the free version of them, and detail which IDE(s) these are available in. 
+## How to Run Dev and Test Environment
+To run this project install the framework - Flutter SDK linked in this website: https://docs.flutter.dev/get-started/install/windows/web\
+Proceed to install the Dart extension on VS Code \
+Once complete, download the dependancies by running `flutter pub get` in the terminal window\
+Next, type `flutter run -d chrome` in the command line
+
+
+
+## Dependencies (installed by running `flutter pub get`)
+flutter-sdk\
+cupertino_icons: ^1.0.8\
+english_words: ^4.0.0\
+provider: ^6.1.2\
+sqflite: ^2.4.2\
+sqflite_common_ffi: ^2.3.1\
+sqflite_common_ffi_web: ^0.4.0\
+path: ^1.9.1
+
+
+
 
 ## Commands
-Describe how the commands and process to launch the project on the main branch in such a way that anyone working on the project knows how to check the affects of any code they add.
 
-```sh
-Example terminal command syntax
-```
+To ensure you're working with the latest stable version of the codebase, switch to the main branch:\
+`git checkout main`\
+`git pull origin main`
 
-It is very common in these sections to see code in peculiar boxes to help them stand out. Check the markdown section of the Project Specifications to see how to add more / customize these.
-
-```python
-def code_highlight_example(m: int, m: float, s: str) -> str:
-	return s + str(n*m)
-```
-
-```java
-public static void main(String[] args){
-	System.out.println("Hello, World!");
-}
-```
-
-```c#
-static void Main(){
-	Console.WriteLine("Hello, World!");
-}
-```
+To Install Dependencies
+If it's your first time running the project or new dependencies were added, install them by running:\
+`flutter pub get`
