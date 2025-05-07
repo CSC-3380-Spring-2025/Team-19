@@ -172,13 +172,14 @@ class _LetterQuestGameState extends State<LetterQuestGame> {
             height: 200,
           ),
           _buildPhraseDisplay(),
+          SizedBox(height: 15),
           Text(hint, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-          SizedBox(height: 10),
+          SizedBox(height:15),
           Text("Incorrect Attempts: $incorrectAttempts"),
-          SizedBox(height: 20),
+          SizedBox(height: 15),
           if (!isSolvingPhrase) _buildSolveButton(),
           if (isSolvingPhrase) _buildPhraseGuessInput(),
-          SizedBox(height: 20),
+          SizedBox(height: 15),
           if (!isSolvingPhrase && !isGameOver)
             WordLadderKeyboard(
               guessedLetters: guessedLetters,
