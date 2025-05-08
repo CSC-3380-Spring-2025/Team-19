@@ -9,7 +9,7 @@ Quality Assurance Tester: Bryce Shifflett (bshiff2)
 ## About Our Software
 WordStorm is a fun and mentally challenging collection of word games built with Flutter. It includes three games: Scattergories, LetterQuest, and Word Ladder. Each game was designed to challenge your vocabulary and problem-solving skills in a different way.
 
-Players start from a simple game selection screen, and once a game begins, a timer tracks how quickly they complete the challenge giving the player a score.The layout is clean, the design is user-friendly, and the games are easy to pick up and play using our how to play section.
+Players start from a simple game selection screen, and once a game begins, a timer tracks how quickly they complete the challenge giving the player a score. The layout is clean, the design is user-friendly, and the games are easy to pick up and play using our how to play section.
 
 ## Browsers Tested on
 Chrome\
